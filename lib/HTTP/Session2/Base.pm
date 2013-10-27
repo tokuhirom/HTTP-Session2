@@ -165,8 +165,8 @@ Create new instance.
 
 =item hmac_function: CodeRef
 
-This module uses hmac to sign the session data.
-You can choice hmac function for security enhancements and performance tuning.
+This module uses HMAC to sign the session data.
+You can choice HMAC function for security enhancements and performance tuning.
 
 Default: C<< \&Digest::SHA::sha1_hex >>
 
@@ -186,7 +186,7 @@ Default:
 =item xsrf_cookie: HashRef
 
 HTTP::Session2 generates 2 cookies. One is for session, other is for XSRF token.
-This parameter configurates parameters for XSRF token cookie.
+This parameter configures parameters for XSRF token cookie.
 For more details, please look L<Cookie::Baker>.
 
 Default:
@@ -198,7 +198,7 @@ Default:
             path     => '/',
         },
 
-Note: C<httponly> flag should be false. Because this parameter should be readable from javascript.
+Note: C<httponly> flag should be false. Because this parameter should be readable from JavaScript.
 And it does not decrease security.
 
 =back
@@ -209,7 +209,7 @@ Get a value from session.
 
 =item C<< $session->set($key: Str, $value:Any) >>
 
-Set a value to session. This means you can set any serializable data to the storage.
+Set a value to session. This means you can set any Serializable data to the storage.
 
 =item C<< $session->remove($key: Str) >>
 
