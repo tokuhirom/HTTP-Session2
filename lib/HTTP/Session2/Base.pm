@@ -16,7 +16,7 @@ has env => (
 
 has session_cookie => (
     is => 'ro',
-    required => 1,
+    lazy => 1,
     default => sub {
         +{
             httponly => 1,
@@ -29,7 +29,7 @@ has session_cookie => (
 
 has xsrf_cookie => (
     is => 'ro',
-    required => 1,
+    lazy => 1,
     default => sub {
         # httponly must be false. AngularJS need to read this value.
         +{
