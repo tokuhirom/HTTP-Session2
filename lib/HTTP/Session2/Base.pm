@@ -5,7 +5,6 @@ use utf8;
 use 5.008_001;
 
 use Digest::SHA;
-use Plack::Util;
 
 use Mouse;
 
@@ -142,10 +141,8 @@ sub finalize_psgi_response {
     my @cookies = $self->make_cookies();
     while (my ($name, $cookie) = splice @cookies, 0, 2) {
         my $baked = Cookie::Baker::bake_cookie( $name, $cookie );
-        Plack::Util::header_push(
-            $res->[1],
-            'Set-Cookie',
-            $baked,
+        push @{$res->[1]}, (
+            'Set-Cookie' => $baked,
         );
     }
 }

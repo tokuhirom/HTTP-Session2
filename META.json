@@ -50,7 +50,6 @@
             "MIME::Base64" : "0",
             "Mouse" : "0",
             "Plack::Response" : "0",
-            "Plack::Util" : "0",
             "parent" : "0",
             "perl" : "5.008005"
          }

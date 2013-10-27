@@ -7,7 +7,6 @@ requires 'Mouse';
 requires 'parent';
 requires 'Digest::SHA';
 requires 'MIME::Base64';
-requires 'Plack::Util';
 requires 'Plack::Response';
 
 on 'test' => sub {
