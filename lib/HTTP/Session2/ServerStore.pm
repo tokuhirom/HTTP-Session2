@@ -29,6 +29,12 @@ has get_store => (
     required => 1,
 );
 
+has xsrf_token => (
+    is => 'ro',
+    lazy => 1,
+    builder => '_build_xsrf_token',
+);
+
 no Mouse;
 
 sub load_session {
@@ -96,14 +102,6 @@ sub expire {
     bless $self, 'HTTP::Session2::ServerStore::Expired';
 
     return;
-}
-
-sub xsrf_token {
-    my $self = shift;
-    unless (exists $self->{xsrf_token}) {
-        $self->{xsrf_token} = $self->_build_xsrf_token();
-    }
-    $self->{xsrf_token};
 }
 
 sub _build_xsrf_token {
