@@ -43,10 +43,10 @@ scenario 'Store something without login' => sub {
         my $res = empty_res();
         $session->finalize_psgi_response($res);
         is $res->[1]->[0], 'Set-Cookie';
-        my ($session) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); HttpOnly\z});
+        my ($session) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); path=/; HttpOnly\z});
         ok $session or diag $res->[1]->[1];
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*)\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*); path=/\z};
         my $xsrf_token = $1;
 
         note $session;
@@ -61,7 +61,6 @@ scenario 'Login' => sub {
             env => {
                 HTTP_COOKIE => 'hss_session=1382835355%3A6e608b9e08d3f76a09ec8ddac36a2ae%3ABQkDAAAAAQoDYmFyAAAAA2Zvbw%3D%3D%3A62343563626434303633303330323837343561383030643531613666623237396233356132353138',
             },
-            get_store => sub { Cache->new() },
             secret => 's3cret',
         );
     };
@@ -76,10 +75,10 @@ scenario 'Login' => sub {
         $session->finalize_psgi_response($res);
         is 0+@{$res->[1]}, 4;
         is $res->[1]->[0], 'Set-Cookie';
-        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); HttpOnly\z});
+        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); path=/; HttpOnly\z});
         ok $sess_id;
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*)\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*); path=/\z};
         my $xsrf_token = $1;
 
         note $sess_id;
@@ -94,7 +93,6 @@ scenario 'In a login session' => sub {
             env => {
                 HTTP_COOKIE => 'hss_session=1382835554%3Aeb197264fa8a8d9932b7547abda4525%3ABQkDAAAAAQoENTk2MwAAAAd1c2VyX2lk%3A63616161373262613236313366313436636363623863386361316231383663383937356433633137',
             },
-            get_store => sub { Cache->new() },
             secret => 's3cret',
         );
     };
@@ -115,7 +113,6 @@ scenario 'Logout' => sub {
             env => {
                 HTTP_COOKIE => 'hss_session=SsEeSsIiOoNn',
             },
-            get_store => sub { Cache->new() },
             secret => 's3cret',
         );
     };
@@ -126,12 +123,10 @@ scenario 'Logout' => sub {
         my $res = empty_res();
         $session->finalize_psgi_response($res);
         is $res->[1]->[0], 'Set-Cookie';
-        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=; expires=[^;]+; HttpOnly\z});
+        like $res->[1]->[1], qr{\Ahss_session=; path=/; expires=[^;]+; HttpOnly\z};
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=; expires=[^;]*\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=; path=/; expires=[^;]*\z};
         my $xsrf_token = $1;
-
-        is_deeply \%Cache::STORE, {};
     };
 };
 

@@ -47,10 +47,10 @@ scenario 'Store something without login' => sub {
         my $res = empty_res();
         $session->finalize_psgi_response($res);
         is $res->[1]->[0], 'Set-Cookie';
-        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); HttpOnly\z});
+        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); path=/; HttpOnly\z});
         ok $sess_id;
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*)\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*); path=/\z};
         my $xsrf_token = $1;
 
         is $Cache::STORE{$sess_id}{foo}, 'bar', 'stored';
@@ -81,11 +81,11 @@ scenario 'Login' => sub {
         $session->finalize_psgi_response($res);
         is 0+@{$res->[1]}, 4;
         is $res->[1]->[0], 'Set-Cookie';
-        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); HttpOnly\z});
+        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=([^;]*); path=/; HttpOnly\z});
         ok $sess_id;
         isnt $sess_id, 'SsEeSsIiOoNn';
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*)\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=([^;]*); path=/\z};
         my $xsrf_token = $1;
 
         is_deeply $Cache::STORE{$sess_id}, {
@@ -143,9 +143,9 @@ scenario 'Logout' => sub {
         my $res = empty_res();
         $session->finalize_psgi_response($res);
         is $res->[1]->[0], 'Set-Cookie';
-        my ($sess_id) = ($res->[1]->[1] =~ qr{\Ahss_session=; expires=[^;]+; HttpOnly\z});
+        like $res->[1]->[1], qr{\Ahss_session=; path=/; expires=[^;]+; HttpOnly\z};
         is $res->[1]->[2], 'Set-Cookie';
-        like $res->[1]->[3], qr{\AXSRF-TOKEN=; expires=[^;]*\z};
+        like $res->[1]->[3], qr{\AXSRF-TOKEN=; path=/; expires=[^;]*\z};
         my $xsrf_token = $1;
 
         is_deeply \%Cache::STORE, {};
