@@ -64,21 +64,23 @@ We don't have to support legacy phones on new project.
 =head1 Automatic XSRF token sending.
 
 This is an example code for filling XSRF token.
-(Not tested yet)
+This code does not supports IE8-.
 
-    $(function () {
+    document.addEventListener("DOMContentLoaded", function () {
+        document.removeEventListener("DOMContentLoaded", arguments.callee, false);
+
         var xsrf_token = getXSRFToken();
-        $('form').each(function () {
-            var method = $(this).attr('method');
-            if (method == 'get' || method == 'GET') {
+        document.getElementsByTagName("form").forEach(function (form) {
+            var method = form.getAttribute('method');
+            if (method === 'get' || method === 'GET') {
                 return;
             }
 
-            var input = $(document.createElement('input'));
-            $(input).attr('type', 'hidden');
-            $(input).attr('name', 'XSRF-TOKEN');
-            $(input).attr('value', xsrf_token);
-            $(this).append(input);
+            var input = document.createElement('input');
+            input.setAttribute('type',  'hidden');
+            input.setAttribute('name',  'XSRF-TOKEN');
+            input.setAttribute('value',  xsrf_token);
+            form.appendChild(input);
         });
 
         function getXSRFToken() {
@@ -91,22 +93,30 @@ This is an example code for filling XSRF token.
             }
             return undefined;
         }
-    });
+    }, false);
 
 =head1 Validate XSRF token in your application
 
 You need to call XSRF validator.
 
-    if ($req->method ne 'GET' && $req->method ne 'HEAD') {
-        my $xsrf_token = $req->header('X-XSRF-TOKEN') || $req->param('xsrf-token');
-        unless ($session->validate_xsrf_token($xsrf_token)) {
-            return [
-                403,
-                [],
-                ['XSRF detected'],
-            ];
+    __PACKAGE__->add_trigger(
+        BEFORE_DISPATCH => sub {
+            my $c = shift;
+            my $req = $c->req;
+
+            if ($req->method ne 'GET' && $req->method ne 'HEAD') {
+                my $xsrf_token = $req->header('X-XSRF-TOKEN') || $req->param('xsrf-token');
+                unless ($session->validate_xsrf_token($xsrf_token)) {
+                    return [
+                        403,
+                        [],
+                        ['XSRF detected'],
+                    ];
+                }
+            }
+            return;
         }
-    }
+    );
 
 =head1 pros/cons for ServerStore/ClientStore
 
@@ -173,6 +183,26 @@ Cookies are usually limited to 4096 bytes. You can't store large data to the ses
 You should care the cookie size, or checking cookie size by the Plack::Middleware layer.
 
 Ref. L<RFC2965|http://tools.ietf.org/html/rfc2965>
+
+=back
+
+=head1 FAQ
+
+=over 4
+
+=item How can I implement "Keep me signed in" checkbox?
+
+You can implement it like following:
+
+    sub dispatch_login {
+        my $c = shift;
+        if ($c->request->parameters->{'keep_me_signed_in'}) {
+            $c->session->session_cookie->{expires} = '+1M';
+        }
+        $c->session->regenerate_id();
+        my $user = User->login($c->request->parameters);
+        $c->session->set('user_id' => $user->id);
+    }
 
 =back
 
