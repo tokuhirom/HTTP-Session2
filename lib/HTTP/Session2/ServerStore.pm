@@ -37,14 +37,12 @@ sub load_session {
         if (defined $data) {
             $self->{id}   = $session_id;
             $self->{_data} = $data;
-            return;
+            return 1;
         }
     }
-
-    $self->_new_session();
 }
 
-sub _new_session {
+sub create_session {
     my $self = shift;
 
     $self->{id}   = $self->_generate_session_id();

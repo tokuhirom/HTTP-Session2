@@ -63,13 +63,11 @@ sub load_session {
     if (defined $session_cookie) {
         my ($time, $id, $serialized, $sig) = split /:/, $session_cookie, 4;
         _compare($self->sig($serialized), $sig) or do {
-            $self->_new_session();
             return;
         };
 
         if (defined $self->ignore_old) {
             if ($time < $self->ignore_old()) {
-                $self->_new_session();
                 return;
             }
         }
@@ -77,13 +75,11 @@ sub load_session {
         my $data = $self->deserializer->($serialized);
         $self->{id}    = $id;
         $self->{_data} = $data;
-        return;
+        return 1;
     }
-
-    $self->_new_session();
 }
 
-sub _new_session {
+sub create_session {
     my $self = shift;
 
     $self->{id}    = $self->_generate_session_id();

@@ -75,7 +75,7 @@ no Moo;
 sub _data {
     my $self = shift;
     unless ($self->{_data}) {
-        $self->load_session();
+        $self->load_or_create();
     }
     $self->{_data};
 }
@@ -83,12 +83,18 @@ sub _data {
 sub id {
     my $self = shift;
     unless ($self->{id}) {
-        $self->load_session();
+        $self->load_or_create();
     }
     $self->{id};
 }
 
-sub load_session { die "Abstract method" }
+sub load_or_create {
+    my $self = shift;
+    $self->load_session() || $self->create_session();
+}
+
+sub load_session   { die "Abstract method" }
+sub create_session { die "Abstract method" }
 
 sub set {
     my ($self, $key, $value) = @_;
