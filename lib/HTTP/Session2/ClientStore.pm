@@ -4,14 +4,14 @@ use warnings;
 use utf8;
 use 5.008_001;
 
-use parent qw(HTTP::Session2::Base);
-
 use Cookie::Baker ();
 use Storable ();
 use MIME::Base64 ();
 use Digest::HMAC;
 
-use Moo;
+use Mouse;
+
+extends 'HTTP::Session2::Base';
 
 has serializer => (
     is => 'ro',
@@ -33,7 +33,7 @@ has ignore_old => (
     is => 'ro',
 );
 
-no Moo;
+no Mouse;
 
 sub _compare {
     my ( $s1, $s2 ) = @_;

@@ -6,26 +6,30 @@ use 5.008_001;
 
 our $VERSION = "0.01";
 
-use parent qw(HTTP::Session2::Base);
-
 use Carp ();
 use Digest::HMAC;
 use Digest::SHA ();
 use Cookie::Baker ();
 
-use Moo;
+use Mouse;
+
+extends 'HTTP::Session2::Base';
 
 has store => (
     is => 'ro',
-    default => sub { $_[0]->get_store->() },
+    lazy => 1,
+    default => sub {
+        $_[0]->get_store->()
+    },
 );
 
 has get_store => (
     is => 'ro',
+    isa => 'CodeRef',
     required => 1,
 );
 
-no Moo;
+no Mouse;
 
 sub load_session {
     my $self = shift;
@@ -92,6 +96,14 @@ sub expire {
     bless $self, 'HTTP::Session2::ServerStore::Expired';
 
     return;
+}
+
+sub xsrf_token {
+    my $self = shift;
+    unless (exists $self->{xsrf_token}) {
+        $self->{xsrf_token} = $self->_build_xsrf_token();
+    }
+    $self->{xsrf_token};
 }
 
 sub _build_xsrf_token {

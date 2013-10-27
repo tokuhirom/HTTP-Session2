@@ -7,7 +7,7 @@ use 5.008_001;
 use Digest::SHA;
 use Plack::Util;
 
-use Moo;
+use Mouse;
 
 has env => (
     is => 'ro',
@@ -61,16 +61,12 @@ has necessary_to_send => (
     default => sub { 0 },
 );
 
-has xsrf_token => (
-    is => 'lazy',
-);
-
 has secret => (
     is => 'ro',
     required => 1,
 );
 
-no Moo;
+no Mouse;
 
 sub _data {
     my $self = shift;

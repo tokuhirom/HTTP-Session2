@@ -3,7 +3,7 @@ requires 'perl', '5.008_001';
 requires 'Cookie::Baker';
 requires 'Digest::HMAC';
 requires 'Digest::SHA1';
-requires 'Moo';
+requires 'Mouse';
 requires 'parent';
 
 on 'test' => sub {
