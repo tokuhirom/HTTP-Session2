@@ -1,4 +1,4 @@
-package HTTP::Session2::CookieStore;
+package HTTP::Session2::ClientStore;
 use strict;
 use warnings;
 use utf8;
@@ -7,6 +7,9 @@ use 5.008_001;
 use parent qw(HTTP::Session2::Base);
 
 use Cookie::Baker ();
+use Storable ();
+use MIME::Base64 ();
+use Digest::HMAC;
 
 use Moo;
 
@@ -32,15 +35,37 @@ has ignore_old => (
 
 no Moo;
 
+sub _compare {
+    my ( $s1, $s2 ) = @_;
+
+    return unless defined $s2;
+    return if length $s1 != length $s2;
+    my $r = 0;
+    for my $i ( 0 .. length($s1) - 1 ) {
+        $r |= ord( substr $s1, $i ) ^ ord( substr $s2, $i );
+    }
+
+    return $r == 0;
+}
+
+sub sig {
+    my($self, $b64) = @_;
+    $self->secret or die "Missing secret. ABORT";
+    Digest::HMAC::hmac_hex($b64, $self->secret, $self->hmac_function);
+}
+
 sub load_session {
     my $self = shift;
 
     # Load from cookie.
     my $cookies = Cookie::Baker::crush_cookie($self->env->{HTTP_COOKIE});
     my $session_cookie = $cookies->{$self->session_cookie->{name}};
-    if ($session_cookie) {
-        my ($time, $id, $serialized, $sig) = split /:/, $session_cookie->{value}, 4;
-        _compare($self->sig($serialized), $sig) or return;
+    if (defined $session_cookie) {
+        my ($time, $id, $serialized, $sig) = split /:/, $session_cookie, 4;
+        _compare($self->sig($serialized), $sig) or do {
+            $self->_new_session();
+            return;
+        };
 
         if (defined $self->ignore_old) {
             if ($time < $self->ignore_old()) {
@@ -82,19 +107,31 @@ sub _build_xsrf_token {
     Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
 }
 
+sub expire {
+    my $self = shift;
+
+    # Load original session first.
+    $self->load_session();
+
+    # Rebless to expired object.
+    bless $self, 'HTTP::Session2::ClientStore::Expired';
+
+    return;
+}
+
 sub make_cookies {
     my ($self) = @_;
 
     return unless $self->necessary_to_send || $self->is_dirty;
 
-    my %cookies;
+    my @cookies;
 
     # Finalize session cookie
     {
         my %cookie = %{$self->session_cookie};
         my $name = delete $cookie{name};
-        my $value = $self->_serialize($self->data);
-        $cookies{$name} = +{
+        my $value = $self->_serialize($self->id, $self->_data);
+        push @cookies, $name => +{
             %cookie,
             value => $value,
         };
@@ -104,13 +141,13 @@ sub make_cookies {
     {
         my %cookie = %{$self->xsrf_cookie};
         my $name = delete $cookie{name};
-        $cookies{$name} = +{
+        push @cookies, $name => +{
             %cookie,
             value => $self->xsrf_token,
         };
     }
 
-    return %cookies;
+    return @cookies;
 }
 
 sub _serialize {
@@ -118,6 +155,43 @@ sub _serialize {
 
     my $serialized = $self->serializer->($data);
     join ":", time(), $id, $serialized, $self->sig($serialized);
+}
+
+package HTTP::Session2::ClientStore::Expired;
+use parent qw(HTTP::Session2::Base);
+
+sub set    { Carp::croak("You cannot set anything to expired session") }
+sub get    { Carp::croak("You cannot get anything from expired session") }
+sub remove { Carp::croak("You cannot remove anything from expired session") }
+
+sub make_cookies {
+    my ($self, $res) = @_;
+
+    my @cookies;
+
+    # Finalize session cookie
+    {
+        my %cookie = %{$self->session_cookie};
+        my $name = delete $cookie{name};
+        push @cookies, $name => +{
+            %cookie,
+            value => '',
+            expires => '-1d',
+        };
+    }
+
+    # Finalize XSRF cookie
+    {
+        my %cookie = %{$self->xsrf_cookie};
+        my $name = delete $cookie{name};
+        push @cookies, $name => +{
+            %cookie,
+            value => '',
+            expires => '-1d',
+        };
+    }
+
+    return @cookies;
 }
 
 1;
