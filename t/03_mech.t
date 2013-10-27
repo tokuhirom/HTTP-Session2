@@ -66,34 +66,38 @@ my $app = sub {
     return $res;
 };
 
-local $SESSION_FACTORY = \&server_session;
-my $mech = Test::WWW::Mechanize::PSGI->new(app => $app, max_redirect => 0);
-$mech->get_ok('/');
-$mech->post_ok('/wishlist?foo');
-$mech->get_ok('/wishlist');
-$mech->content_is('foo');
-$mech->post('/wishlist?bar');
-is $mech->status, 403;
-$mech->default_headers->header('X-XSRF-TOKEN', xsrf_token($mech));
-$mech->post_ok('/wishlist?bar');
-$mech->get_ok('/wishlist');
-$mech->content_is('foo,bar');
-$mech->post_ok('/account/login?john');
-$mech->get_ok('/wishlist', 'Wishlist is still available');
-$mech->content_is('foo,bar');
-$mech->post('/wishlist?baz');
-is $mech->status, 403, 'xsrf token was changed, too';
-$mech->default_headers->header('X-XSRF-TOKEN', xsrf_token($mech));
-$mech->post_ok('/wishlist?baz');
-$mech->get_ok('/wishlist', 'Wishlist is still available');
-$mech->content_is('foo,bar,baz');
-$mech->get_ok('/my/name');
-$mech->content_is('john');
+for my $session_factory (\&server_session, \&client_session) {
+    note "------ factory";
 
-is cookie_count($mech), 2;
-$mech->post('/account/logout?john');
-is $mech->status, 302;
-is cookie_count($mech), 0;
+    local $SESSION_FACTORY = $session_factory;
+    my $mech = Test::WWW::Mechanize::PSGI->new(app => $app, max_redirect => 0);
+    $mech->get_ok('/');
+    $mech->post_ok('/wishlist?foo');
+    $mech->get_ok('/wishlist');
+    $mech->content_is('foo');
+    $mech->post('/wishlist?bar');
+    is $mech->status, 403;
+    $mech->default_headers->header('X-XSRF-TOKEN', xsrf_token($mech));
+    $mech->post_ok('/wishlist?bar');
+    $mech->get_ok('/wishlist');
+    $mech->content_is('foo,bar');
+    $mech->post_ok('/account/login?john');
+    $mech->get_ok('/wishlist', 'Wishlist is still available');
+    $mech->content_is('foo,bar');
+    $mech->post('/wishlist?baz');
+    is $mech->status, 403, 'xsrf token was changed, too';
+    $mech->default_headers->header('X-XSRF-TOKEN', xsrf_token($mech));
+    $mech->post_ok('/wishlist?baz');
+    $mech->get_ok('/wishlist', 'Wishlist is still available');
+    $mech->content_is('foo,bar,baz');
+    $mech->get_ok('/my/name');
+    $mech->content_is('john');
+
+    is cookie_count($mech), 2;
+    $mech->post('/account/logout?john');
+    is $mech->status, 302;
+    is cookie_count($mech), 0;
+};
 
 done_testing;
 
@@ -114,6 +118,14 @@ sub server_session {
     HTTP::Session2::ServerStore->new(
         env => $env,
         get_store => sub { Cache->new() },
+        secret => 's3cret',
+    );
+}
+
+sub client_session {
+    my $env = shift;
+    HTTP::Session2::ClientStore->new(
+        env => $env,
         secret => 's3cret',
     );
 }

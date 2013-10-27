@@ -97,14 +97,18 @@ sub _generate_session_id {
 sub regenerate_id {
     my ($self) = @_;
 
+    # Load original session first.
+    $self->load_session();
+
     # Create new session.
-    $self->_new_session();
+    $self->{id}    = $self->_generate_session_id();
+    $self->is_dirty(1);
     $self->necessary_to_send(1);
 }
 
-sub _build_xsrf_token {
+sub xsrf_token {
     my $self = shift;
-    Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
+    return $self->id;
 }
 
 sub expire {
@@ -143,7 +147,7 @@ sub make_cookies {
         my $name = delete $cookie{name};
         push @cookies, $name => +{
             %cookie,
-            value => $self->xsrf_token,
+            value => $self->id,
         };
     }
 
