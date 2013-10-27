@@ -1,7 +1,7 @@
-
+[![Build Status](https://travis-ci.org/tokuhirom/HTTP-Session2.png?branch=master)](https://travis-ci.org/tokuhirom/HTTP-Session2) [![Coverage Status](https://coveralls.io/repos/tokuhirom/HTTP-Session2/badge.png?branch=master)](https://coveralls.io/r/tokuhirom/HTTP-Session2?branch=master)
 # NAME
 
-HTTP::Session2 - It's new $module
+HTTP::Session2 - HTTP session management
 
 # SYNOPSIS
 

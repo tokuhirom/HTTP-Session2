@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-HTTP::Session2 - It's new $module
+HTTP::Session2 - HTTP session management
 
 =head1 SYNOPSIS
 

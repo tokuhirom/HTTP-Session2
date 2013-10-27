@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "HTTP session management",
    "author" : [
       "tokuhirom <tokuhirom@gmail.com>"
    ],
@@ -58,5 +58,16 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokuhirom/HTTP-Session2/issues"
+      },
+      "homepage" : "https://github.com/tokuhirom/HTTP-Session2",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokuhirom/HTTP-Session2.git",
+         "web" : "https://github.com/tokuhirom/HTTP-Session2"
+      }
+   },
    "version" : "0.01"
 }
