@@ -45,15 +45,19 @@
          "requires" : {
             "Cookie::Baker" : "0",
             "Digest::HMAC" : "0",
+            "Digest::SHA" : "0",
             "Digest::SHA1" : "0",
+            "MIME::Base64" : "0",
             "Mouse" : "0",
+            "Plack::Util" : "0",
             "parent" : "0",
             "perl" : "5.008005"
          }
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.98"
+            "Test::More" : "0.98",
+            "Test::WWW::Mechanize::PSGI" : "0"
          }
       }
    },
