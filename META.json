@@ -49,13 +49,13 @@
             "Digest::SHA1" : "0",
             "MIME::Base64" : "0",
             "Mouse" : "0",
-            "Plack::Response" : "0",
             "parent" : "0",
             "perl" : "5.008005"
          }
       },
       "test" : {
          "requires" : {
+            "Plack::Response" : "0",
             "Test::More" : "0.98",
             "Test::WWW::Mechanize::PSGI" : "0"
          }
