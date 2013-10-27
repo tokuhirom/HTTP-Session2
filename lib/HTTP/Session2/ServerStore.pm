@@ -188,4 +188,46 @@ sub make_cookies {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+HTTP::Session2::ServerStore - Session store
+
+=head1 DESCRIPTION
+
+This module is a part of HTTP::Session2 library.
+This module saves the session data on server side storage.
+
+=head1 CONSTRUCTOR PARAMETERS
+
+=over 4
+
+=item get_store : CodeRef, required.
+
+Callback function to get the storage object.
+
+The storage object must have following 3 methods.
+
+=over 4
+
+=item $cache->get($key:Str)
+
+=item $cache->set($key:Str, $value:Serializable)
+
+=item $cache->remove($key:Str)
+
+=back
+
+And, cache object should be serialize/deserialize the data automatically.
+
+L<CHI> supports all things. You can use any L<CHI> drivers.
+
+But, I recommend to use C<Cache::Memcached::Fast>.
+
+=back
+
+=head1 METHODS
+
+Methods are listed on L<HTTP::Session2::Base>.
 

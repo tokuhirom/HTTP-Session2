@@ -5,8 +5,6 @@ use warnings;
 
 our $VERSION = "0.01";
 
-
-
 1;
 __END__
 
@@ -24,7 +22,7 @@ HTTP::Session2 - It's new $module
     sub session {
         my $self = shift;
         if (!exists $self->{session}) {
-            $self->{session} = HTTP::Session2::CookieStore->new(env => $env);
+            $self->{session} = HTTP::Session2::ClientStore->new(env => $env, secret => 'very long secret string');
         }
         $self->{session};
     }
@@ -40,7 +38,28 @@ HTTP::Session2 - It's new $module
 
 =head1 DESCRIPTION
 
-HTTP::Session2 is ...
+HTTP::Session2 is yet another HTTP session data management library.
+
+=head1 MOTIVATION
+
+We need a thrifty session management library.
+
+=head1 What's different from HTTP::Session 1?
+
+=head2 Generate XSRF protection token by session management library
+
+Most of web application needs XSRF protection library.
+
+tokuhirom guess XSRF token is closely related with session management.
+
+=head2 Dropped StickyQuery support
+
+In Japan, old DoCoMo's phone does not support cookie.
+Then, we need to support query parameter based session management.
+
+But today, Japanese people are using smart phone :)
+We don't have to support legacy phones on new project.
+
 
 =head1 Automatic XSRF token sending.
 
@@ -89,23 +108,7 @@ You need to call XSRF validator.
         }
     }
 
-=head1 What's different from HTTP::Session 1?
-
-=head2 Generate XSRF protection token by session management library
-
-Most of web application needs XSRF protection library.
-
-tokuhirom guess XSRF token is closely related with session management.
-
-=head2 Dropped StickyQuery support
-
-In Japan, old DoCoMo's phone does not support cookie.
-Then, we need to support query parameter based session management.
-
-But today, Japanese people are using smart phone :)
-We don't have to support legacy phones on new project.
-
-=head1 pros/cons for ServerStore/CookieStore
+=head1 pros/cons for ServerStore/ClientStore
 
 =head2 ServerStore pros
 
@@ -131,7 +134,7 @@ You need to setup some configuration for your application.
 
 =back
 
-=head2 CookieStore
+=head2 ClientStore
 
 =head3 pros
 

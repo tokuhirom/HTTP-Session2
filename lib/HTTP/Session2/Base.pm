@@ -120,8 +120,9 @@ sub validate_xsrf_token {
 
 sub finalize_plack_response {
     my ($self, $res) = @_;
-    my %cookies = $self->make_cookies();
-    while (my ($name, $cookie) = each %cookies) {
+
+    my @cookies = $self->make_cookies();
+    while (my ($name, $cookie) = splice @cookies, 0, 2) {
         $res->cookies->{$name} = $cookie;
     }
 }
@@ -142,4 +143,97 @@ sub finalize_psgi_response {
 sub make_cookies { die "Abstract method" }
 
 1;
+__END__
 
+=head1 NAME
+
+HTTP::Session2 - Abstract base class for HTTP::Session2
+
+=head1 DESCRIPTION
+
+This is an abstract base class for HTTP::Session2.
+
+=head1 Common Methods
+
+=over 4
+
+=item C<< my $store = HTTP::Session2::*->new(%args) >>
+
+Create new instance.
+
+=over 4
+
+=item hmac_function: CodeRef
+
+This module uses hmac to sign the session data.
+You can choise hmac function for security enhancements and performance tuning.
+
+Default: C<< \&Digest::SHA::sha1_hex >>
+
+=item session_cookie: HashRef
+
+Options for session cookie. For more details, please look L<Cookie::Baker>.
+
+Default:
+
+        +{
+            httponly => 1,
+            secure   => 0,
+            name     => 'hss_session',
+            path     => '/',
+        },
+
+=item xsrf_cookie: HashRef
+
+HTTP::Session2 generates 2 cookies. One is for session, other is for XSRF token.
+This parameter configurates parameters for XSRF token cookie.
+For more details, please look L<Cookie::Baker>.
+
+Default:
+
+        +{
+            httponly => 0,
+            secure   => 0,
+            name     => 'XSRF-TOKEN',
+            path     => '/',
+        },
+
+Note: C<httponly> flag should be false. Because this parameter should be readable from javascript.
+And it does not decrease security.
+
+=back
+
+=item C<< $session->get($key: Str) >>
+
+Get a value from session.
+
+=item C<< $session->set($key: Str, $value:Any) >>
+
+Set a value to session. This means you can set any serializable data to the storage.
+
+=item C<< $session->remove($key: Str) >>
+
+Remove the value from session.
+
+=item C<< $session->validate_xsrf_token($token: Str) >>
+
+    my $token = $req->header('X-XSRF-TOKEN') || $req->param('XSRF-TOKEN');
+    unless ($session->validate_xsrf_token($token)) {
+        return Plack::Response->new(
+            403,
+            [],
+            'Missing XSRF token'
+        );
+    }
+
+Validate XSRF token. If the XSRF token is valid, return true. False otherwise.
+
+=item C<< $session->xsrf_token() >>
+
+Get a XSRF token in string.
+
+=item C<< $session->finalize_plack_response($res: Plack::Response) >>
+
+Finalize cookie headers and inject it to L<Plack::Response> instance.
+
+=back

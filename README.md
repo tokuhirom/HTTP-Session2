@@ -11,7 +11,7 @@ HTTP::Session2 - It's new $module
     sub session {
         my $self = shift;
         if (!exists $self->{session}) {
-            $self->{session} = HTTP::Session2::CookieStore->new(env => $env);
+            $self->{session} = HTTP::Session2::ClientStore->new(env => $env, secret => 'very long secret string');
         }
         $self->{session};
     }
@@ -27,7 +27,29 @@ HTTP::Session2 - It's new $module
 
 # DESCRIPTION
 
-HTTP::Session2 is ...
+HTTP::Session2 is yet another HTTP session data management library.
+
+# MOTIVATION
+
+We need a thrifty session management library.
+
+# What's different from HTTP::Session 1?
+
+## Generate XSRF protection token by session management library
+
+Most of web application needs XSRF protection library.
+
+tokuhirom guess XSRF token is closely related with session management.
+
+## Dropped StickyQuery support
+
+In Japan, old DoCoMo's phone does not support cookie.
+Then, we need to support query parameter based session management.
+
+But today, Japanese people are using smart phone :)
+We don't have to support legacy phones on new project.
+
+
 
 # Automatic XSRF token sending.
 
@@ -76,23 +98,7 @@ You need to call XSRF validator.
         }
     }
 
-# What's different from HTTP::Session 1?
-
-## Generate XSRF protection token by session management library
-
-Most of web application needs XSRF protection library.
-
-tokuhirom guess XSRF token is closely related with session management.
-
-## Dropped StickyQuery support
-
-In Japan, old DoCoMo's phone does not support cookie.
-Then, we need to support query parameter based session management.
-
-But today, Japanese people are using smart phone :)
-We don't have to support legacy phones on new project.
-
-# pros/cons for ServerStore/CookieStore
+# pros/cons for ServerStore/ClientStore
 
 ## ServerStore pros
 
@@ -108,7 +114,7 @@ We don't have to support legacy phones on new project.
 
     You need to setup some configuration for your application.
 
-## CookieStore
+## ClientStore
 
 ### pros
 

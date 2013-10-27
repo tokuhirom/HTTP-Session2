@@ -199,9 +199,34 @@ __END__
 
 =head1 NAME
 
+HTTP::Session2::ClientStore - Client store
+
 =head1 DESCRIPTION
 
 This is a part of L<HTTP::Session2> library.
 
 This module stores the data to the cookie value.
+
+=head1 ClientStore specific constructor parameters
+
+=over 4
+
+=item serializer: CodeRef
+
+Serializer callback function.
+
+Default: C<< MIME::Base64::encode(Storable::nfreeze($_[0]), '' ) >>
+
+=item deserializer: CodeRef
+
+Deserializer callback function.
+
+Default: C<< Storable::thaw(MIME::Base64::decode($_[0])) >>
+
+=item ignore_old: Int
+
+Ignore session data older than C<ignore_old> value.
+You can specify this value in epoch time.
+
+=back
 
