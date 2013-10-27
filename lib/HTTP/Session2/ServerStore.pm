@@ -68,6 +68,9 @@ sub regenerate_id {
         $self->store->remove($session_id);
     }
 
+    # Clear XSRF token
+    delete $self->{xsrf_token};
+
     # Create new session.
     $self->{id} = $self->_generate_session_id();
     $self->necessary_to_send(1);
@@ -78,6 +81,7 @@ sub expire {
     my $self = shift;
 
     # Load original session first.
+    # # Is this needed?
     $self->load_session();
 
     # Remove original session from storage.

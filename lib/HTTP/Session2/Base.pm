@@ -22,6 +22,7 @@ has session_cookie => (
             httponly => 1,
             secure   => 0,
             name     => 'hss_session',
+            path     => '/',
         },
     },
 );
@@ -35,6 +36,7 @@ has xsrf_cookie => (
             httponly => 0,
             secure   => 0,
             name     => 'XSRF-TOKEN',
+            path     => '/',
         },
     },
 );
@@ -107,10 +109,10 @@ sub remove {
 
 sub validate_xsrf_token {
     my ($self, $token) = @_;
-    return 0 unless defined $token;
-    return 1 if $token eq $self->xsrf_token;
     # If user does not have any session data, user don't need a XSRF protection.
     return 1 unless %{$self->_data};
+    return 0 unless defined $token;
+    return 1 if $token eq $self->xsrf_token;
     return 0;
 }
 
