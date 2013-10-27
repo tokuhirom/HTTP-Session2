@@ -92,6 +92,56 @@ Then, we need to support query parameter based session management.
 But today, Japanese people are using smart phone :)
 We don't have to support legacy phones on new project.
 
+# pros/cons for ServerStore/CookieStore
+
+## ServerStore pros
+
+### pros
+
+- It was used well.
+- User can't see anything.
+- You can store large data in session.
+
+### cons
+
+- Setup is hard.
+
+    You need to setup some configuration for your application.
+
+## CookieStore
+
+### pros
+
+- You don't need to store anything on your server
+
+    It makes easy to setup your server environment.
+
+- Less server side disk
+
+    It helps your wallet.
+
+### cons
+
+- Security
+
+    I hope this module is secure. Because the data was signed by HMAC. But security thing is hard.
+
+- Session data is readable by users
+
+    You can't store the any secret data to the session. Because this library signed to the data, but not encrypted.
+
+- Bandwidth
+
+    If you store the large data to the session, your session data is send to the server per every request.
+    It may hits band-width issue. If you are writing high traffic web site, you should use server side store.
+
+- Capacity
+
+    Cookies are usually limited to 4096 bytes. You can't store large data to the session.
+    You should care the cookie size, or checking cookie size by the Plack::Middleware layer.
+
+    Ref. [RFC2965](http://tools.ietf.org/html/rfc2965)
+
 # LICENSE
 
 Copyright (C) tokuhirom.

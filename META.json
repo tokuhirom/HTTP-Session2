@@ -46,7 +46,7 @@
             "Cookie::Baker" : "0",
             "Digest::HMAC" : "0",
             "Digest::SHA1" : "0",
-            "Moo" : "0",
+            "Mouse" : "0",
             "parent" : "0",
             "perl" : "5.008005"
          }
