@@ -151,11 +151,7 @@ sub make_cookies {
 }
 
 package HTTP::Session2::ServerStore::Expired;
-use parent qw(HTTP::Session2::Base);
-
-sub set    { Carp::croak("You cannot set anything to expired session") }
-sub get    { Carp::croak("You cannot get anything from expired session") }
-sub remove { Carp::croak("You cannot remove anything from expired session") }
+use parent qw(HTTP::Session2::Expired);
 
 sub make_cookies {
     my ($self, $res) = @_;
