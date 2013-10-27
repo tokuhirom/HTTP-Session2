@@ -166,7 +166,7 @@ Create new instance.
 =item hmac_function: CodeRef
 
 This module uses hmac to sign the session data.
-You can choise hmac function for security enhancements and performance tuning.
+You can choice hmac function for security enhancements and performance tuning.
 
 Default: C<< \&Digest::SHA::sha1_hex >>
 
