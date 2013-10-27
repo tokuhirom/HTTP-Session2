@@ -114,8 +114,8 @@ sub get {
 
 sub remove {
     my ($self, $key) = @_;
-    delete $self->_data->{$key};
     $self->is_dirty(1);
+    delete $self->_data->{$key};
 }
 
 sub validate_xsrf_token {
