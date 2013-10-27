@@ -110,7 +110,7 @@ You need to call XSRF validator.
 
 =head1 pros/cons for ServerStore/ClientStore
 
-=head2 ServerStore pros
+=head2 ServerStore
 
 =head3 pros
 

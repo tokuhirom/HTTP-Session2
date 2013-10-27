@@ -100,7 +100,7 @@ You need to call XSRF validator.
 
 # pros/cons for ServerStore/ClientStore
 
-## ServerStore pros
+## ServerStore
 
 ### pros
 
