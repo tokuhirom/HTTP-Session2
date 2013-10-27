@@ -25,6 +25,11 @@ has session_cookie => (
             path     => '/',
         },
     },
+    # Need shallow copy
+    trigger => sub {
+        my $self = shift;
+        $self->{session_cookie} = +{%{$self->{session_cookie}}};
+    },
 );
 
 has xsrf_cookie => (
@@ -38,6 +43,11 @@ has xsrf_cookie => (
             name     => 'XSRF-TOKEN',
             path     => '/',
         },
+    },
+    # Need shallow copy
+    trigger => sub {
+        my $self = shift;
+        $self->{xsrf_cookie} = +{%{$self->{xsrf_cookie}}};
     },
 );
 
