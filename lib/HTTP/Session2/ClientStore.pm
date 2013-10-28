@@ -36,6 +36,7 @@ has ignore_old => (
 
 no Mouse;
 
+# HMAC timing attack
 sub _compare {
     my ( $s1, $s2 ) = @_;
 
