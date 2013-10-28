@@ -42,6 +42,10 @@ HTTP::Session2 - HTTP session management
 
 HTTP::Session2 is yet another HTTP session data management library.
 
+=head1 RELEASE STATE
+
+Alpha. Any API will change without notice.
+
 =head1 MOTIVATION
 
 We need a thrifty session management library.
