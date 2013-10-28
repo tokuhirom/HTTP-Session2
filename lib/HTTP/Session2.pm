@@ -8,6 +8,8 @@ our $VERSION = "0.01";
 1;
 __END__
 
+=for stopwords checkbox
+
 =encoding utf-8
 
 =head1 NAME

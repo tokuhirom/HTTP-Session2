@@ -176,19 +176,19 @@ This module stores the data to the cookie value.
 
 =over 4
 
-=item serializer: CodeRef
+=item C<< serializer: CodeRef >>
 
 Serializer callback function.
 
 Default: C<< MIME::Base64::encode(Storable::nfreeze($_[0]), '' ) >>
 
-=item deserializer: CodeRef
+=item C<< deserializer: CodeRef >>
 
 Deserializer callback function.
 
 Default: C<< Storable::thaw(MIME::Base64::decode($_[0])) >>
 
-=item ignore_old: Int
+=item C<< ignore_old: Int >>
 
 Ignore session data older than C<ignore_old> value.
 You can specify this value in epoch time.
