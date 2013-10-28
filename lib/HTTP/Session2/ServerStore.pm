@@ -10,6 +10,7 @@ use Carp ();
 use Digest::HMAC;
 use Digest::SHA ();
 use Cookie::Baker ();
+use HTTP::Session2::Expired;
 
 use Mouse;
 
@@ -99,7 +100,7 @@ sub expire {
     }
 
     # Rebless to expired object.
-    bless $self, 'HTTP::Session2::ServerStore::Expired';
+    bless $self, 'HTTP::Session2::Expired';
 
     return;
 }
@@ -152,39 +153,6 @@ sub make_cookies {
         push @cookies, $name => +{
             %cookie,
             value => $self->xsrf_token,
-        };
-    }
-
-    return @cookies;
-}
-
-package HTTP::Session2::ServerStore::Expired;
-use parent qw(HTTP::Session2::Expired);
-
-sub finalize {
-    my ($self) = @_;
-
-    my @cookies;
-
-    # Finalize session cookie
-    {
-        my %cookie = %{$self->session_cookie};
-        my $name = delete $cookie{name};
-        push @cookies, $name => +{
-            %cookie,
-            value => '',
-            expires => '-1d',
-        };
-    }
-
-    # Finalize XSRF cookie
-    {
-        my %cookie = %{$self->xsrf_cookie};
-        my $name = delete $cookie{name};
-        push @cookies, $name => +{
-            %cookie,
-            value => '',
-            expires => '-1d',
         };
     }
 

@@ -7,7 +7,8 @@ use 5.008_001;
 use Cookie::Baker ();
 use Storable ();
 use MIME::Base64 ();
-use Digest::HMAC;
+use Digest::HMAC ();
+use HTTP::Session2::Expired;
 
 use Mouse;
 
@@ -114,7 +115,7 @@ sub expire {
     $self->load_session();
 
     # Rebless to expired object.
-    bless $self, 'HTTP::Session2::ClientStore::Expired';
+    bless $self, 'HTTP::Session2::Expired';
 
     return;
 }
@@ -155,39 +156,6 @@ sub _serialize {
 
     my $serialized = $self->serializer->($data);
     join ":", time(), $id, $serialized, $self->sig($serialized);
-}
-
-package HTTP::Session2::ClientStore::Expired;
-use parent qw(HTTP::Session2::Expired);
-
-sub finalize {
-    my ($self, $res) = @_;
-
-    my @cookies;
-
-    # Finalize session cookie
-    {
-        my %cookie = %{$self->session_cookie};
-        my $name = delete $cookie{name};
-        push @cookies, $name => +{
-            %cookie,
-            value => '',
-            expires => '-1d',
-        };
-    }
-
-    # Finalize XSRF cookie
-    {
-        my %cookie = %{$self->xsrf_cookie};
-        my $name = delete $cookie{name};
-        push @cookies, $name => +{
-            %cookie,
-            value => '',
-            expires => '-1d',
-        };
-    }
-
-    return @cookies;
 }
 
 1;
