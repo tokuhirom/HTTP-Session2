@@ -119,10 +119,10 @@ sub expire {
     return;
 }
 
-sub make_cookies {
+sub finalize {
     my ($self) = @_;
 
-    return unless $self->necessary_to_send || $self->is_dirty;
+    return () unless $self->necessary_to_send || $self->is_dirty;
 
     my @cookies;
 
@@ -160,7 +160,7 @@ sub _serialize {
 package HTTP::Session2::ClientStore::Expired;
 use parent qw(HTTP::Session2::Expired);
 
-sub make_cookies {
+sub finalize {
     my ($self, $res) = @_;
 
     my @cookies;

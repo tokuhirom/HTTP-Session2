@@ -109,19 +109,27 @@ sub _build_xsrf_token {
     Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
 }
 
+sub save_data {
+    my $self = shift;
+
+    return unless $self->is_dirty;
+
+    $self->store->set($self->id, $self->_data);
+}
+
+sub finalize {
+    my $self = shift;
+    $self->save_data();
+    return $self->make_cookies();
+}
+
 sub make_cookies {
-    my ($self, $res) = @_;
+    my $self = shift;
 
-    # Store data
-    if ($self->is_dirty) {
-        $self->store->set($self->id, $self->_data);
-
-        if ($self->is_fresh) {
-            $self->necessary_to_send(1);
-        }
-    }
-
-    unless ($self->necessary_to_send) {
+    unless (
+        ($self->is_dirty && $self->is_fresh)
+        || $self->necessary_to_send
+    ) {
         return ();
     }
 
@@ -153,8 +161,8 @@ sub make_cookies {
 package HTTP::Session2::ServerStore::Expired;
 use parent qw(HTTP::Session2::Expired);
 
-sub make_cookies {
-    my ($self, $res) = @_;
+sub finalize {
+    my ($self) = @_;
 
     my @cookies;
 

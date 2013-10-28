@@ -130,7 +130,7 @@ sub validate_xsrf_token {
 sub finalize_plack_response {
     my ($self, $res) = @_;
 
-    my @cookies = $self->make_cookies();
+    my @cookies = $self->finalize();
     while (my ($name, $cookie) = splice @cookies, 0, 2) {
         $res->cookies->{$name} = $cookie;
     }
@@ -138,7 +138,7 @@ sub finalize_plack_response {
 
 sub finalize_psgi_response {
     my ($self, $res) = @_;
-    my @cookies = $self->make_cookies();
+    my @cookies = $self->finalize();
     while (my ($name, $cookie) = splice @cookies, 0, 2) {
         my $baked = Cookie::Baker::bake_cookie( $name, $cookie );
         push @{$res->[1]}, (
@@ -147,7 +147,7 @@ sub finalize_psgi_response {
     }
 }
 
-sub make_cookies { die "Abstract method" }
+sub finalize { die "Abstract method" }
 
 1;
 __END__
