@@ -70,23 +70,24 @@ We don't have to support legacy phones on new project.
 =head1 Automatic XSRF token sending.
 
 This is an example code for filling XSRF token.
-This code does not supports IE8-.
+This code requires jQuery.
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.removeEventListener("DOMContentLoaded", arguments.callee, false);
+    $(function () {
+        "use strict";
 
         var xsrf_token = getXSRFToken();
-        document.getElementsByTagName("form").forEach(function (form) {
-            var method = form.getAttribute('method');
+        $("form").each(function () {
+            var form = $(this);
+            var method = form.attr('method');
             if (method === 'get' || method === 'GET') {
                 return;
             }
 
-            var input = document.createElement('input');
-            input.setAttribute('type',  'hidden');
-            input.setAttribute('name',  'XSRF-TOKEN');
-            input.setAttribute('value',  xsrf_token);
-            form.appendChild(input);
+            var input = $(document.createElement('input'));
+            input.attr('type',  'hidden');
+            input.attr('name',  'XSRF-TOKEN');
+            input.attr('value',  xsrf_token);
+            form.prepend(input);
         });
 
         function getXSRFToken() {
@@ -94,12 +95,12 @@ This code does not supports IE8-.
             for (var i=0,l=cookies.length; i<l; i++) {
                 var matched = cookies[i].match(/^XSRF-TOKEN=(.*)$/);
                 if (matched) {
-                    returm matched[1];
+                    return matched[1];
                 }
             }
             return undefined;
         }
-    }, false);
+    });
 
 =head1 Validate XSRF token in your application
 
