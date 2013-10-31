@@ -172,7 +172,7 @@ This is an abstract base class for HTTP::Session2.
 
 =over 4
 
-=item C<< my $store = HTTP::Session2::*->new(%args) >>
+=item C<< my $session = HTTP::Session2::*->new(%args) >>
 
 Create new instance.
 
