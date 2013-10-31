@@ -4,7 +4,7 @@ use warnings;
 use utf8;
 use 5.008_001;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 use Carp ();
 use Digest::HMAC;
@@ -21,6 +21,9 @@ has store => (
     required => 1,
     lazy => 1,
     default => sub {
+        unless (defined $_[0]->get_store) {
+            Carp::croak("store or get_store is required.");
+        }
         $_[0]->get_store->()
     },
 );
@@ -176,7 +179,11 @@ This module saves the session data on server side storage.
 
 =over 4
 
-=item get_store : CodeRef, required.
+=item store: Object, optional
+
+The storage object. You need to set 'store' or 'get_store'.
+
+=item get_store : CodeRef,  optional
 
 Callback function to get the storage object.
 
