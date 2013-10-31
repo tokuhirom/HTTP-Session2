@@ -124,7 +124,7 @@ sub expire {
 sub finalize {
     my ($self) = @_;
 
-    return () unless $self->necessary_to_send || $self->is_dirty;
+    return () unless $self->necessary_to_send || $self->is_dirty || $self->validate_empty_session();
 
     my @cookies;
 

@@ -3,6 +3,21 @@ use warnings;
 use utf8;
 use Test::More 0.96;
 use HTTP::Session2::ClientStore;
+use Cookie::Baker;
+use Plack::Request;
+
+sub make_cookie_header_from_psgi_response {
+    my $res = shift;
+    my $x = sub {
+        my $h = shift;
+        if ($h =~ /\A([^;]*);/) {
+            $1;
+        } else {
+            die "Invalid http header: $h";
+        }
+    };
+    return join(';', $x->($res->[1]->[1]), $x->($res->[1]->[3]));
+}
 
 subtest 'get/set/remove' => sub {
     my $client = HTTP::Session2::ClientStore->new(
@@ -13,6 +28,48 @@ subtest 'get/set/remove' => sub {
     $client->set('foo', 'bar');
     is $client->get('foo'), 'bar';
     is $client->remove('foo'), 'bar';
+};
+
+subtest 'validate_token' => sub {
+    my $header = do {
+        my $session = HTTP::Session2::ClientStore->new(
+            env => {
+            },
+            validate_empty_session => 1,
+            secret => 'secret',
+        );
+        my $res = [200,[],[]];
+        $session->finalize_psgi_response($res);
+        is 0+@{$res->[1]}, 4;
+        make_cookie_header_from_psgi_response($res);
+    };
+
+    subtest 'bad' => sub {
+        my $env = +{
+            HTTP_COOKIE => $header,
+        };
+        my $client = HTTP::Session2::ClientStore->new(
+            env                    => $env,
+            validate_empty_session => 1,
+            secret                 => 'secret',
+        );
+        my $req = Plack::Request->new($env);
+        ok !$client->validate_xsrf_token('');
+    };
+
+    subtest 'good' => sub {
+        my $env = +{
+            HTTP_COOKIE => $header,
+        };
+        my $req = Plack::Request->new($env);
+        $env->{'QUERY_STRING'} = 'XSRF-TOKEN=' . $req->cookies->{'XSRF-TOKEN'};
+        my $client = HTTP::Session2::ClientStore->new(
+            env                    => $env,
+            validate_empty_session => 1,
+            secret                 => 'secret',
+        );
+        ok $client->validate_xsrf_token($req->cookies->{'XSRF-TOKEN'});
+    };
 };
 
 subtest 'ignore_old' => sub {
