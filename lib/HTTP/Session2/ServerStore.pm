@@ -18,6 +18,7 @@ extends 'HTTP::Session2::Base';
 
 has store => (
     is => 'ro',
+    required => 1,
     lazy => 1,
     default => sub {
         $_[0]->get_store->()
@@ -27,7 +28,7 @@ has store => (
 has get_store => (
     is => 'ro',
     isa => 'CodeRef',
-    required => 1,
+    required => 0,
 );
 
 has xsrf_token => (

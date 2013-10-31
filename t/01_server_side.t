@@ -132,7 +132,7 @@ scenario 'Logout' => sub {
             env => {
                 HTTP_COOKIE => 'hss_session=SsEeSsIiOoNn',
             },
-            get_store => sub { Cache->new() },
+            store => Cache->new(),
             secret => 's3cret',
         );
     };
