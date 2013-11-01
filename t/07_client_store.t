@@ -35,9 +35,9 @@ subtest 'validate_token' => sub {
         my $session = HTTP::Session2::ClientStore->new(
             env => {
             },
-            validate_empty_session => 1,
             secret => 'secret',
         );
+        $session->set(x => 1);
         my $res = [200,[],[]];
         $session->finalize_psgi_response($res);
         is 0+@{$res->[1]}, 4;
@@ -50,7 +50,6 @@ subtest 'validate_token' => sub {
         };
         my $client = HTTP::Session2::ClientStore->new(
             env                    => $env,
-            validate_empty_session => 1,
             secret                 => 'secret',
         );
         my $req = Plack::Request->new($env);
@@ -65,7 +64,6 @@ subtest 'validate_token' => sub {
         $env->{'QUERY_STRING'} = 'XSRF-TOKEN=' . $req->cookies->{'XSRF-TOKEN'};
         my $client = HTTP::Session2::ClientStore->new(
             env                    => $env,
-            validate_empty_session => 1,
             secret                 => 'secret',
         );
         ok $client->validate_xsrf_token($req->cookies->{'XSRF-TOKEN'});

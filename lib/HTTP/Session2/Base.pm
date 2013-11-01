@@ -31,11 +31,6 @@ has session_cookie => (
     },
 );
 
-has validate_empty_session => (
-    is => 'ro',
-    default => sub { 0 },
-);
-
 has xsrf_cookie => (
     is => 'ro',
     lazy => 1,
@@ -126,10 +121,8 @@ sub remove {
 sub validate_xsrf_token {
     my ($self, $token) = @_;
 
-    unless ($self->validate_empty_session()) {
-        # If user does not have any session data, user don't need a XSRF protection.
-        return 1 unless %{$self->_data};
-    }
+    # If user does not have any session data, user don't need a XSRF protection.
+    return 1 unless %{$self->_data};
     return 0 unless defined $token;
     return 1 if $token eq $self->xsrf_token;
     return 0;
@@ -215,12 +208,6 @@ Default:
 
 Note: C<httponly> flag should be false. Because this parameter should be readable from JavaScript.
 And it does not decrease security.
-
-=item validate_empty_session: Bool
-
-By default, HTTP::Session2 does not validate empty session. Empty session means the session does not contain any data. Because the empty session does not have any logged in data. We don't need to defend by the XSRF issue.
-
-But, there is an environment uses P3P cookies for authentication and you need to validate XSRF token for it.
 
 =back
 
