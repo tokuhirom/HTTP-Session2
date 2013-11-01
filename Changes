@@ -2,6 +2,11 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+0.04 2013-11-01T01:00:09Z
+
+    - Revert validate_empty_session flag introduced at 0.03.
+      (tokuhirom)
+
 0.03 2013-10-31T01:19:19Z
 
     - Validate empty session option for P3P cookies.
