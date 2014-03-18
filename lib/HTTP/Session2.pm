@@ -3,7 +3,7 @@ use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 1;
 __END__
@@ -223,6 +223,10 @@ it under the same terms as Perl itself.
 =head1 AUTHOR
 
 tokuhirom E<lt>tokuhirom@gmail.comE<gt>
+
+=head1 CONTRIBUTORS
+
+magai
 
 =cut
 

@@ -2,6 +2,14 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+0.05 2014-03-18T18:52:37Z
+
+    - use Cookie::Baker for generating cookie string for Plack response object.
+      Because the document says HTTP::Session supports Cookie::Baker's expiration format like "-1d".
+      But it's not supported in previous version!!
+      https://github.com/tokuhirom/HTTP-Session2/pull/1
+      (magai)
+
 0.04 2013-11-01T01:00:09Z
 
     - Revert validate_empty_session flag introduced at 0.03.

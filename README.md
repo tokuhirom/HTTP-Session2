@@ -53,8 +53,6 @@ Then, we need to support query parameter based session management.
 But today, Japanese people are using smart phone :)
 We don't have to support legacy phones on new project.
 
-
-
 # Automatic XSRF token sending.
 
 This is an example code for filling XSRF token.
@@ -189,3 +187,7 @@ it under the same terms as Perl itself.
 # AUTHOR
 
 tokuhirom <tokuhirom@gmail.com>
+
+# CONTRIBUTORS
+
+magai
