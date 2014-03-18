@@ -133,7 +133,8 @@ sub finalize_plack_response {
 
     my @cookies = $self->finalize();
     while (my ($name, $cookie) = splice @cookies, 0, 2) {
-        $res->cookies->{$name} = $cookie;
+        my $baked = Cookie::Baker::bake_cookie( $name, $cookie );
+        $res->headers->push_header('Set-Cookie' => $baked);
     }
 }
 
