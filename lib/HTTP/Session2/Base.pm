@@ -125,6 +125,7 @@ sub validate_xsrf_token {
     return 1 unless %{$self->_data};
     return 0 unless defined $token;
     return 1 if $token eq $self->xsrf_token;
+    return 1 if $token eq $self->xsrf_token_00x;
     return 0;
 }
 

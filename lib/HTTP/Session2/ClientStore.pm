@@ -109,6 +109,12 @@ sub xsrf_token {
     return $self->id;
 }
 
+# back compatibility in 0.0x
+sub xsrf_token_00x {
+    my $self = shift;
+    return $self->id;
+}
+
 sub expire {
     my $self = shift;
 
