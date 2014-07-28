@@ -111,7 +111,7 @@ sub expire {
 
 sub _build_xsrf_token {
     my $self = shift;
-    Digest::HMAC::hmac_hex($self->secret, $self->id, $self->hmac_function);
+    Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
 }
 
 sub save_data {
