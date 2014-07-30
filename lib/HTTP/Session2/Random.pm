@@ -14,7 +14,7 @@ use Time::HiRes;
 
 # Generate session id from /dev/urandom.
 sub generate_session_id_from_urandom {
-    my $length = 23;
+    my $length = 24;
     open my $fh, '<:raw', '/dev/urandom'
         or die "Cannot open /dev/urandom: $!";
     my $read = read($fh, my $buf, $length);
@@ -24,7 +24,7 @@ sub generate_session_id_from_urandom {
     my $result = MIME::Base64::encode_base64($buf, '');
     $result =~ tr|+/=|\-_|d; # make it url safe
     close $fh;
-    return $result;
+    return substr($result, 0, 31);
 }
 
 # It's weaker than abover. But it's portable.

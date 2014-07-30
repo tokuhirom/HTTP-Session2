@@ -8,7 +8,7 @@ if (-e '/dev/urandom') {
     my $token_urandom = HTTP::Session2::Random::generate_session_id_from_urandom();
     my $token_perl = HTTP::Session2::Random::generate_session_id_from_perl();
     diag "/dev/urandom: " . $token_urandom;
-    diag "perl: " . $token_perl;
+    diag "perl:         " . $token_perl;
     is length($token_urandom), length($token_perl);
 } else {
     diag "No /dev/urandom";
