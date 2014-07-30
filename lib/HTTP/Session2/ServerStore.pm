@@ -111,6 +111,10 @@ sub expire {
 
 sub _build_xsrf_token {
     my $self = shift;
+
+    # @kazuho san recommend to change this code as `hmax(secret, id, hmac_function)`.
+    # It makes secure. But we can't change this code for backward compatibility.
+    # We should change this code at HTTP::Session3.
     Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
 }
 
