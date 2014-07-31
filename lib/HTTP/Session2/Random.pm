@@ -2,7 +2,7 @@ package HTTP::Session2::Random;
 use strict;
 use warnings;
 use utf8;
-use 5.010_001;
+use 5.008_001;
 
 # DO NOT USE THIS DIRECTLY.
 
@@ -10,33 +10,27 @@ use MIME::Base64 ();
 use Digest::SHA ();
 use Time::HiRes;
 
-*generate_session_id = -e '/dev/urandom' ? \&generate_session_id_from_urandom : \&generate_session_id_from_perl;
+our $URANDOM_FH;
 
-# Generate session id from /dev/urandom.
-{
-    my $FH;
+# $URANDOM_FH is undef if there is no /dev/urandom
+open $URANDOM_FH, '<:raw', '/dev/urandom'
+    or warn "Cannot open /dev/urandom: $!.";
 
-    sub generate_session_id_from_urandom {
+sub generate_session_id {
+    if ($URANDOM_FH) {
         my $length = 24;
-
-        unless (defined $FH) {
-            open $FH, '<:raw', '/dev/urandom'
-                or die "Cannot open /dev/urandom: $!";
-        }
-        my $read = read($FH, my $buf, $length);
+        # Generate session id from /dev/urandom.
+        my $read = read($URANDOM_FH, my $buf, $length);
         if ($read != $length) {
             die "Cannot read bytes from /dev/urandom: $!";
         }
         my $result = MIME::Base64::encode_base64($buf, '');
         $result =~ tr|+/=|\-_|d; # make it url safe
         return substr($result, 0, 31);
+    } else {
+        # It's weaker than above. But it's portable.
+        substr(Digest::SHA::sha1_hex(rand() . $$ . {} . Time::HiRes::time()),int(rand(4)),31);
     }
 }
 
-# It's weaker than abover. But it's portable.
-sub generate_session_id_from_perl {
-    substr(Digest::SHA::sha1_hex(rand() . $$ . {} . Time::HiRes::time()),int(rand(4)),31);
-}
-
 1;
-
