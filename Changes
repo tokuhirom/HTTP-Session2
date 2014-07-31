@@ -2,6 +2,10 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.02 2014-07-31T21:14:50Z
+
+    - Better session id generation using /dev/urandom.
+
 1.01 2014-07-28T11:43:10Z
 
     - Revert HMAC strategy...
