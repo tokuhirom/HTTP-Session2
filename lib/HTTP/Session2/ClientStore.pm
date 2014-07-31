@@ -9,6 +9,7 @@ use Storable ();
 use MIME::Base64 ();
 use Digest::HMAC ();
 use HTTP::Session2::Expired;
+use HTTP::Session2::Random;
 
 use Mouse;
 
@@ -84,12 +85,8 @@ sub load_session {
 sub create_session {
     my $self = shift;
 
-    $self->{id}    = $self->_generate_session_id();
+    $self->{id}    = HTTP::Session2::Random::generate_session_id();
     $self->{_data} = +{};
-}
-
-sub _generate_session_id {
-    substr(Digest::SHA::sha1_hex(rand() . $$ . {} . time),int(rand(4)),31);
 }
 
 sub regenerate_id {
@@ -99,7 +96,7 @@ sub regenerate_id {
     $self->load_session();
 
     # Create new session.
-    $self->{id}    = $self->_generate_session_id();
+    $self->{id}    = HTTP::Session2::Random::generate_session_id();
     $self->is_dirty(1);
     $self->necessary_to_send(1);
 }

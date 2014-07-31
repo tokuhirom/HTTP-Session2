@@ -11,6 +11,7 @@ use Digest::HMAC;
 use Digest::SHA ();
 use Cookie::Baker ();
 use HTTP::Session2::Expired;
+use HTTP::Session2::Random;
 
 use Mouse;
 
@@ -60,13 +61,9 @@ sub load_session {
 sub create_session {
     my $self = shift;
 
-    $self->{id}   = $self->_generate_session_id();
+    $self->{id}   = HTTP::Session2::Random::generate_session_id();
     $self->{_data} = +{};
     $self->is_fresh(1);
-}
-
-sub _generate_session_id {
-    substr(Digest::SHA::sha1_hex(rand() . $$ . {} . time),int(rand(4)),31);
 }
 
 sub regenerate_id {
@@ -85,7 +82,7 @@ sub regenerate_id {
     delete $self->{xsrf_token};
 
     # Create new session.
-    $self->{id} = $self->_generate_session_id();
+    $self->{id} = HTTP::Session2::Random::generate_session_id();
     $self->necessary_to_send(1);
     $self->is_dirty(1);
 }
