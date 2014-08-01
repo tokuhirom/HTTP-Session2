@@ -8,6 +8,7 @@ requires 'parent';
 requires 'Digest::SHA';
 requires 'MIME::Base64';
 requires 'Time::HiRes';
+requires 'Data::MessagePack';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';
