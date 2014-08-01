@@ -14,7 +14,10 @@ our $URANDOM_FH;
 
 # $URANDOM_FH is undef if there is no /dev/urandom
 open $URANDOM_FH, '<:raw', '/dev/urandom'
-    or warn "Cannot open /dev/urandom: $!.";
+    or do {
+    undef $URANDOM_FH;
+    warn "Cannot open /dev/urandom: $!.";
+};
 
 sub generate_session_id {
     if ($URANDOM_FH) {
