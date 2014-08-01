@@ -11,6 +11,7 @@ use Digest::HMAC ();
 use HTTP::Session2::Expired;
 use HTTP::Session2::Random;
 use Data::MessagePack;
+use Crypt::CBC;
 
 use Mouse;
 
@@ -22,7 +23,7 @@ has serializer => (
     is => 'ro',
     default => sub {
         sub {
-            MIME::Base64::encode_base64(Storable::nfreeze($_[0]) , '');
+            Storable::nfreeze($_[0]);
         }
     },
 );
@@ -31,9 +32,15 @@ has deserializer => (
     is => 'ro',
     default => sub {
         sub {
-            Storable::thaw(MIME::Base64::decode_base64($_[0]))
+            Storable::thaw($_[0])
         }
     },
+);
+
+has cipher => (
+    is => 'ro',
+    isa => 'Crypt::CBC',
+    required => 1,
 );
 
 has ignore_old => (
@@ -69,7 +76,13 @@ sub load_session {
     my $cookies = Cookie::Baker::crush_cookie($self->env->{HTTP_COOKIE});
     my $session_cookie = $cookies->{$self->session_cookie->{name}};
     if (defined $session_cookie) {
-        my ($time, $id, $serialized, $sig) = split /:/, $session_cookie, 4;
+        my ($time, $id, $encrypted, $sig) = split /:/, $session_cookie, 4;
+        $encrypted = MIME::Base64::decode_base64url($encrypted);
+        my $serialized = eval { $self->cipher->decrypt($encrypted) };
+        if ($@) {
+            warn $@;
+            return;
+        }
         _compare($self->sig($serialized), $sig) or do {
             return;
         };
@@ -158,7 +171,9 @@ sub _serialize {
     my ($self, $id, $data) = @_;
 
     my $serialized = $self->serializer->($data);
-    join ":", time(), $id, $serialized, $self->sig($serialized);
+    my $encrypted = $self->cipher->encrypt($serialized);
+    $encrypted = MIME::Base64::encode_base64url($encrypted);
+    join ":", time(), $id, $encrypted, $self->sig($serialized);
 }
 
 1;

@@ -80,13 +80,13 @@ subtest 'ignore_old' => sub {
         $client->set(x => 3);
         my $res = [200,[],[]];
         $client->finalize_psgi_response($res);
-        $res->[1]->[1] =~ /hss_session=([^;]+)/;
+        $res->[1]->[1] =~ /hss_session2=([^;]+)/;
         $1;
     };
     subtest 'ignore_old disabled' => sub {
         my $client = HTTP::Session2::ClientStore->new(
             env => {
-                HTTP_COOKIE => "hss_session=${session_data}",
+                HTTP_COOKIE => "hss_session2=${session_data}",
             },
             secret => 'secret',
             ignore_old => $t1-86400,
@@ -96,7 +96,7 @@ subtest 'ignore_old' => sub {
     subtest 'ignore_old enabled' => sub {
         my $client = HTTP::Session2::ClientStore->new(
             env => {
-                HTTP_COOKIE => "hss_session=${session_data}",
+                HTTP_COOKIE => "hss_session2=${session_data}",
             },
             secret => 'secret',
             ignore_old => $t1+86400,
