@@ -214,5 +214,9 @@ Default: C<< Storable::thaw(MIME::Base64::decode($_[0])) >>
 Ignore session data older than C<ignore_old> value.
 You can specify this value in epoch time.
 
+=item C<< cipher: Crypt::CBC >> : Required
+
+Cipher for the session data.
+
 =back
 
