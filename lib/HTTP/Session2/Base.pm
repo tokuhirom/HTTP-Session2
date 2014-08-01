@@ -5,6 +5,7 @@ use utf8;
 use 5.008_001;
 
 use Digest::SHA;
+use Carp ();
 
 use Mouse;
 
@@ -73,6 +74,12 @@ has necessary_to_send => (
 has secret => (
     is => 'ro',
     required => 1,
+    trigger => sub {
+        my ($self, $secret) = @_;
+        if (length($secret) < 20) {
+            Carp::cluck("Secret string too short");
+        }
+    },
 );
 
 no Mouse;
