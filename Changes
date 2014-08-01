@@ -2,6 +2,12 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.06 2014-08-01T14:00:33Z
+
+    [BUG FIX]
+    - Random string generator doesn't works if /dev/urandom is not available.
+      This issue was introduced at 1.02.
+
 1.05 2014-08-01T11:20:13Z
 
     - Show warnings if the secret string is too short.
