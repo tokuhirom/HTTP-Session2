@@ -48,7 +48,7 @@
             "Digest::HMAC" : "0",
             "Digest::SHA" : "0",
             "Digest::SHA1" : "0",
-            "MIME::Base64" : "0",
+            "MIME::Base64" : "3.11",
             "Mouse" : "0",
             "Time::HiRes" : "0",
             "parent" : "0",
@@ -76,7 +76,7 @@
          "web" : "https://github.com/tokuhirom/HTTP-Session2"
       }
    },
-   "version" : "1.06",
+   "version" : "1.07",
    "x_contributors" : [
       "magai <xxmagai@gmail.com>"
    ]

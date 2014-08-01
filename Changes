@@ -2,6 +2,10 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.07 2014-08-01T14:06:49Z
+
+    - Fixed deps
+
 1.06 2014-08-01T14:00:33Z
 
     [BUG FIX]
