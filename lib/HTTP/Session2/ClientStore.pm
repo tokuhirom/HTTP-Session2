@@ -5,6 +5,7 @@ use utf8;
 use 5.008_001;
 
 use Storable ();
+use Carp ();
 
 use Mouse;
 
@@ -16,6 +17,7 @@ has '+serializer' => (
     is => 'ro',
     default => sub {
         sub {
+            Carp::cluck("Do not use HTTP::Session2::ClientStore. Use HTTP::Session2::ServerStore or HTTP::Session2::ClientStore2 instead.");
             MIME::Base64::encode(Storable::nfreeze($_[0]), '' )
         }
     },
@@ -23,7 +25,10 @@ has '+serializer' => (
 
 has '+deserializer' => (
     default => sub {
-        sub {Storable::thaw(MIME::Base64::decode($_[0]))}
+        sub {
+            Carp::cluck("Do not use HTTP::Session2::ClientStore. Use HTTP::Session2::ServerStore or HTTP::Session2::ClientStore2 instead.");
+            Storable::thaw(MIME::Base64::decode($_[0]))
+        }
     },
 );
 
