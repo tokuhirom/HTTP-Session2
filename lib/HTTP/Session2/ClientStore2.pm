@@ -11,7 +11,6 @@ use Digest::HMAC ();
 use HTTP::Session2::Expired;
 use HTTP::Session2::Random;
 use Data::MessagePack;
-use CBOR::XS;
 
 use Mouse;
 
