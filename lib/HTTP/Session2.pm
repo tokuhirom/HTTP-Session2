@@ -3,7 +3,7 @@ use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = "1.03";
+our $VERSION = "1.04";
 
 1;
 __END__
@@ -21,10 +21,20 @@ HTTP::Session2 - HTTP session management
     package MyApp;
     use HTTP::Session2;
 
+    my $cipher = Crypt::CBC->new(
+        {
+            key    => 'abcdefghijklmnop',
+            cipher => 'Rijndael',
+        }
+    );
     sub session {
         my $self = shift;
         if (!exists $self->{session}) {
-            $self->{session} = HTTP::Session2::ClientStore->new(env => $env, secret => 'very long secret string');
+            $self->{session} = HTTP::Session2::ClientStore2->new(
+                env => $env,
+                secret => 'very long secret string'
+                cipher => $cipher,
+            );
         }
         $self->{session};
     }
@@ -125,7 +135,7 @@ You need to call XSRF validator.
         }
     );
 
-=head1 pros/cons for ServerStore/ClientStore
+=head1 pros/cons for ServerStore/ClientStore2
 
 =head2 ServerStore
 
@@ -151,7 +161,7 @@ You need to setup some configuration for your application.
 
 =back
 
-=head2 ClientStore
+=head2 ClientStore2
 
 =head3 pros
 
@@ -174,10 +184,6 @@ It helps your wallet.
 =item Security
 
 I hope this module is secure. Because the data was signed by HMAC. But security thing is hard.
-
-=item Session data is readable by users
-
-You can't store the any secret data to the session. Because this library signed to the data, but not encrypted.
 
 =item Bandwidth
 

@@ -187,9 +187,7 @@ HTTP::Session2::ClientStore2 - Client store
 
 This is a part of L<HTTP::Session2> library.
 
-This module stores the data to the cookie value.
-Client can read the data from cookie_jar.
-Do not store the important data to this module.
+This module stores the data to the cookie value with encryption.
 
 Normally, you should use L<HTTP::Session2::ServerStore>.
 

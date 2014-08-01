@@ -8,10 +8,20 @@ HTTP::Session2 - HTTP session management
     package MyApp;
     use HTTP::Session2;
 
+    my $cipher = Crypt::CBC->new(
+        {
+            key    => 'abcdefghijklmnop',
+            cipher => 'Rijndael',
+        }
+    );
     sub session {
         my $self = shift;
         if (!exists $self->{session}) {
-            $self->{session} = HTTP::Session2::ClientStore->new(env => $env, secret => 'very long secret string');
+            $self->{session} = HTTP::Session2::ClientStore2->new(
+                env => $env,
+                secret => 'very long secret string'
+                cipher => $cipher,
+            );
         }
         $self->{session};
     }
@@ -111,7 +121,7 @@ You need to call XSRF validator.
         }
     );
 
-# pros/cons for ServerStore/ClientStore
+# pros/cons for ServerStore/ClientStore2
 
 ## ServerStore
 
@@ -127,7 +137,7 @@ You need to call XSRF validator.
 
     You need to setup some configuration for your application.
 
-## ClientStore
+## ClientStore2
 
 ### pros
 
@@ -144,10 +154,6 @@ You need to call XSRF validator.
 - Security
 
     I hope this module is secure. Because the data was signed by HMAC. But security thing is hard.
-
-- Session data is readable by users
-
-    You can't store the any secret data to the session. Because this library signed to the data, but not encrypted.
 
 - Bandwidth
 
