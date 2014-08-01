@@ -43,17 +43,21 @@
       "runtime" : {
          "requires" : {
             "Cookie::Baker" : "0",
+            "Crypt::CBC" : "0",
+            "Data::MessagePack" : "0",
             "Digest::HMAC" : "0",
             "Digest::SHA" : "0",
             "Digest::SHA1" : "0",
             "MIME::Base64" : "0",
             "Mouse" : "0",
+            "Time::HiRes" : "0",
             "parent" : "0",
             "perl" : "5.008005"
          }
       },
       "test" : {
          "requires" : {
+            "Crypt::Rijndael" : "0",
             "Plack::Response" : "0",
             "Test::More" : "0.98",
             "Test::WWW::Mechanize::PSGI" : "0"
@@ -72,7 +76,7 @@
          "web" : "https://github.com/tokuhirom/HTTP-Session2"
       }
    },
-   "version" : "1.02",
+   "version" : "1.03",
    "x_contributors" : [
       "magai <xxmagai@gmail.com>"
    ]

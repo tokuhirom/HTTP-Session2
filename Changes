@@ -2,6 +2,10 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.03 2014-08-01T11:03:19Z
+
+    - Added HTTP::Session2::ClientStore2
+
 1.02 2014-07-31T21:14:50Z
 
     - Better session id generation using /dev/urandom.
