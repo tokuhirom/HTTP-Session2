@@ -11,6 +11,13 @@ sub scenario {
 sub step { note $_[0]; goto $_[1] }
 sub empty_res { [200, [], []] }
 
+my $cipher = Crypt::CBC->new(
+    {
+        key              => 'abcdefghijklmnop',
+        cipher           => 'Rijndael',
+    }
+);
+
 scenario 'First request' => sub {
     my $session;
     step 'client -> server: request without cookie' => sub {
@@ -18,6 +25,7 @@ scenario 'First request' => sub {
             env => {
             },
             secret => 's3cret',
+            cipher => $cipher,
         );
     };
     step 'server -> client: response without cookie' => sub {
@@ -34,6 +42,7 @@ scenario 'Store something without login' => sub {
             env => {
             },
             secret => 's3cret',
+            cipher => $cipher,
         );
     };
     step 'server -> store: save data' => sub {
@@ -59,9 +68,10 @@ scenario 'Login' => sub {
     step 'client -> server: request without cookie' => sub {
         $session = HTTP::Session2::ClientStore2->new(
             env => {
-                HTTP_COOKIE => 'hss_session=1406884272%3AB_XYw61aAowSyGk_MApxmrYdtqViosg%3ABQoDAAAAAQoDYmFyAAAAA2Zvbw%3D%3D%3A33396534616363663563373338323064666561616461313966643933633036383337646561616361',
+                HTTP_COOKIE => 'hss_session=1406888765%3AW8FOt_W50dUE3y9OmGaIL0WJSl9PrmT%3AU2FsdGVkX1_w6JJjwL0qYxAozvRXWyLpwA-bTDzUYdCxKbG5I_dA7PgPuZyk8j9f9L0Ib0ms4cGXxIniHXLkkQ%3A61306463343264613164393535376437353634356362303563616530633539373565643730393331',
             },
             secret => 's3cret',
+            cipher => $cipher,
         );
     };
     step 'server -> server: regenerate_id' => sub {
@@ -91,9 +101,10 @@ scenario 'In a login session' => sub {
     step 'client -> server: request without cookie' => sub {
         $session = HTTP::Session2::ClientStore2->new(
             env => {
-                HTTP_COOKIE => 'hss_session=1382835554%3Aeb197264fa8a8d9932b7547abda4525%3ABQkDAAAAAQoENTk2MwAAAAd1c2VyX2lk%3A63616161373262613236313366313436636363623863386361316231383663383937356433633137',
+                HTTP_COOKIE => 'hss_session=1406888829%3A1Ma0tOlOoMUn0WjIcKdt7ht81h-_1jq%3AU2FsdGVkX18abCO8LNcFZ_Hn2-1O3mKOk79-Yw_L1ZHginGQmrXFEkeL72AGDQwWdWXGQT_0zh01g5oVGfd_UQ%3A61306463343264613164393535376437353634356362303563616530633539373565643730393331',
             },
             secret => 's3cret',
+            cipher => $cipher,
         );
     };
     step 'server -> store: set more data' => sub {
@@ -114,6 +125,7 @@ scenario 'Logout' => sub {
                 HTTP_COOKIE => 'hss_session=SsEeSsIiOoNn',
             },
             secret => 's3cret',
+            cipher => $cipher,
         );
     };
     step 'server -> server: expire' => sub {
