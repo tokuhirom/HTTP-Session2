@@ -2,9 +2,13 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.05 2014-08-01T11:20:13Z
+
+    - Show warnings if the secret string is too short.
+
 1.04 2014-08-01T11:09:52Z
 
-    - Documentation update.d
+    - Documentation updated.
 
 1.03 2014-08-01T11:03:19Z
 
