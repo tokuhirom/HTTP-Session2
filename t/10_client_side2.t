@@ -68,7 +68,7 @@ scenario 'Login' => sub {
     step 'client -> server: request without cookie' => sub {
         $session = HTTP::Session2::ClientStore2->new(
             env => {
-                HTTP_COOKIE => 'hss_session=1406888765%3AW8FOt_W50dUE3y9OmGaIL0WJSl9PrmT%3AU2FsdGVkX1_w6JJjwL0qYxAozvRXWyLpwA-bTDzUYdCxKbG5I_dA7PgPuZyk8j9f9L0Ib0ms4cGXxIniHXLkkQ%3A61306463343264613164393535376437353634356362303563616530633539373565643730393331',
+                HTTP_COOKIE => 'hss_session=1406890754%3As4qlg6vKuD1l0WJac2Epbk4m6wWFcmv%3AU2FsdGVkX19IMvx9Dwd_G2ZwMEdILVVdlQK_GocHsIo%3A38313236366131636465383263616565633230303264326566633739356636363139326130363730',
             },
             secret => 's3cret',
             cipher => $cipher,
@@ -101,7 +101,7 @@ scenario 'In a login session' => sub {
     step 'client -> server: request without cookie' => sub {
         $session = HTTP::Session2::ClientStore2->new(
             env => {
-                HTTP_COOKIE => 'hss_session=1406888829%3A1Ma0tOlOoMUn0WjIcKdt7ht81h-_1jq%3AU2FsdGVkX18abCO8LNcFZ_Hn2-1O3mKOk79-Yw_L1ZHginGQmrXFEkeL72AGDQwWdWXGQT_0zh01g5oVGfd_UQ%3A61306463343264613164393535376437353634356362303563616530633539373565643730393331',
+                HTTP_COOKIE => 'hss_session=1406890754%3As4qlg6vKuD1l0WJac2Epbk4m6wWFcmv%3AU2FsdGVkX19IMvx9Dwd_G2ZwMEdILVVdlQK_GocHsIo%3A38313236366131636465383263616565633230303264326566633739356636363139326130363730',
             },
             secret => 's3cret',
             cipher => $cipher,

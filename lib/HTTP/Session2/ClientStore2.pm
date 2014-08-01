@@ -23,7 +23,7 @@ has serializer => (
     is => 'ro',
     default => sub {
         sub {
-            Storable::nfreeze($_[0]);
+            $MESSAGE_PACK->pack($_[0]);
         }
     },
 );
@@ -32,7 +32,7 @@ has deserializer => (
     is => 'ro',
     default => sub {
         sub {
-            Storable::thaw($_[0])
+            $MESSAGE_PACK->unpack($_[0])
         }
     },
 );
