@@ -16,5 +16,6 @@ on 'test' => sub {
     requires 'Test::WWW::Mechanize::PSGI';
     requires 'Plack::Response';
     requires 'Crypt::Rijndael';
+    requires 'Plack::Request';
 };
 

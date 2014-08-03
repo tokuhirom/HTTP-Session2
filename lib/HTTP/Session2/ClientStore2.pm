@@ -76,16 +76,18 @@ sub load_session {
     my $cookies = Cookie::Baker::crush_cookie($self->env->{HTTP_COOKIE});
     my $session_cookie = $cookies->{$self->session_cookie->{name}};
     if (defined $session_cookie) {
-        my ($time, $id, $encrypted, $sig) = split /:/, $session_cookie, 4;
-        $encrypted = MIME::Base64::decode_base64url($encrypted);
-        my $serialized = eval { $self->cipher->decrypt($encrypted) };
+        my $textified = $session_cookie;
+        my $encrypted = MIME::Base64::decode_base64url($textified);
+        my $serialized_and_sig = eval { $self->cipher->decrypt($encrypted) };
         if ($@) {
             warn $@;
             return;
         }
+        my ($serialized, $sig) = split /:/, $serialized_and_sig, 2;
         _compare($self->sig($serialized), $sig) or do {
             return;
         };
+        my ($time, $id, $data) = @{$self->deserializer->($serialized)};
 
         if (defined $self->ignore_old) {
             if ($time < $self->ignore_old()) {
@@ -93,7 +95,6 @@ sub load_session {
             }
         }
 
-        my $data = $self->deserializer->($serialized);
         $self->{id}    = $id;
         $self->{_data} = $data;
         return 1;
@@ -170,10 +171,12 @@ sub finalize {
 sub _serialize {
     my ($self, $id, $data) = @_;
 
-    my $serialized = $self->serializer->($data);
-    my $encrypted = $self->cipher->encrypt($serialized);
+    my $serialized = $self->serializer->([time(), $id, $data]);
+    my $sig = $self->sig($serialized);
+    my $joined = join(':', $serialized, $sig);
+    my $encrypted = $self->cipher->encrypt($joined);
     $encrypted = MIME::Base64::encode_base64url($encrypted);
-    join ":", time(), $id, $encrypted, $self->sig($serialized);
+    return $encrypted;
 }
 
 1;
