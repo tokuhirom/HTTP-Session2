@@ -58,6 +58,7 @@
       "test" : {
          "requires" : {
             "Crypt::Rijndael" : "0",
+            "Plack::Request" : "0",
             "Plack::Response" : "0",
             "Test::More" : "0.98",
             "Test::WWW::Mechanize::PSGI" : "0"
@@ -76,7 +77,7 @@
          "web" : "https://github.com/tokuhirom/HTTP-Session2"
       }
    },
-   "version" : "1.07",
+   "version" : "1.08",
    "x_contributors" : [
       "magai <xxmagai@gmail.com>"
    ]

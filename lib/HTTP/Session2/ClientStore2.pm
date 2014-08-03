@@ -221,3 +221,7 @@ Cipher for the session data.
 
 =back
 
+=head1 BACKWARD COMPATIBILITY
+
+1.03 ~ 1.07 was broken. Do not use these version.
+
