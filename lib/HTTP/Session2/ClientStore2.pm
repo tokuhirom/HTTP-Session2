@@ -83,7 +83,7 @@ sub load_session {
             warn $@;
             return;
         }
-        my ($sig, $serialized) = split /:/, $serialized_and_sig, 2;
+        my ($sig, $serialized) = @{$self->deserializer->($serialized_and_sig)};
         _compare($self->sig($serialized), $sig) or do {
             return;
         };
@@ -173,7 +173,7 @@ sub _serialize {
 
     my $serialized = $self->serializer->([time(), $id, $data]);
     my $sig = $self->sig($serialized);
-    my $joined = join(':', $sig, $serialized);
+    my $joined = $self->serializer->([$sig, $serialized]);
     my $encrypted = $self->cipher->encrypt($joined);
     $encrypted = MIME::Base64::encode_base64url($encrypted);
     return $encrypted;
