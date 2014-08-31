@@ -186,7 +186,9 @@ sub _deserialize {
     eval {
         @data = @{$self->deserializer->($serialized)};
     };
-    warn "Can't deserialize session data. It seems that the browser sent strange or incompatible cookies." if $@;
+    if ($@) {
+        warn "Can't deserialize session data. It seems that the browser sent strange or incompatible cookies.";
+    }
 
     @data;
 }
