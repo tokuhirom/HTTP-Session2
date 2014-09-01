@@ -2,6 +2,11 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+1.09 2014-09-01T02:22:09Z
+
+    - Catch the exception thrown from deserializer.
+      (songmu++)
+
 1.08 2014-08-03T07:21:44Z
 
     [INCOMPATIBLE CHANGE]

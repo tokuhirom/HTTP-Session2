@@ -77,8 +77,9 @@
          "web" : "https://github.com/tokuhirom/HTTP-Session2"
       }
    },
-   "version" : "1.08",
+   "version" : "1.09",
    "x_contributors" : [
-      "magai <xxmagai@gmail.com>"
+      "magai <xxmagai@gmail.com>",
+      "Songmu <y.songmu@gmail.com>"
    ]
 }
