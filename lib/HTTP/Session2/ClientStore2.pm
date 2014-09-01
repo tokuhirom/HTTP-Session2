@@ -83,11 +83,11 @@ sub load_session {
             warn $@;
             return;
         }
-        my ($sig, $serialized) = @{$self->deserializer->($serialized_and_sig)};
+        my ($sig, $serialized) = $self->_deserialize($serialized_and_sig);
         _compare($self->sig($serialized), $sig) or do {
             return;
         };
-        my ($time, $id, $data) = @{$self->deserializer->($serialized)};
+        my ($time, $id, $data) = $self->_deserialize($serialized);
 
         if (defined $self->ignore_old) {
             if ($time < $self->ignore_old()) {
@@ -177,6 +177,20 @@ sub _serialize {
     my $encrypted = $self->cipher->encrypt($joined);
     $encrypted = MIME::Base64::encode_base64url($encrypted);
     return $encrypted;
+}
+
+sub _deserialize {
+    my ($self, $serialized) = @_;
+
+    my @data;
+    eval {
+        @data = @{$self->deserializer->($serialized)};
+    };
+    if ($@) {
+        warn "Can't deserialize session data. It seems that the browser sent strange or incompatible cookies.";
+    }
+
+    @data;
 }
 
 1;
