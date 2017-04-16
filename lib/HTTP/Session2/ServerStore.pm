@@ -41,6 +41,13 @@ has xsrf_token => (
     builder => '_build_xsrf_token',
 );
 
+# back compatibility in 0.0x
+has xsrf_token_00x => (
+    is => 'ro',
+    lazy => 1,
+    builder => '_build_xsrf_token_00x',
+);
+
 no Mouse;
 
 sub load_session {
@@ -112,6 +119,12 @@ sub _build_xsrf_token {
     # @kazuho san recommend to change this code as `hmax(secret, id, hmac_function)`.
     # It makes secure. But we can't change this code for backward compatibility.
     # We should change this code at HTTP::Session3.
+    Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
+}
+
+# back compatibility in 0.0x
+sub _build_xsrf_token_00x {
+    my $self = shift;
     Digest::HMAC::hmac_hex($self->id, $self->secret, $self->hmac_function);
 }
 
