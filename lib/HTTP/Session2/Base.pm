@@ -163,7 +163,13 @@ __END__
 
 =head1 NAME
 
-HTTP::Session2 - Abstract base class for HTTP::Session2
+HTTP::Session2::Base - Abstract base class for HTTP::Session2
+
+=head1 DEPRECATION NOTICE
+
+This module is B<DEPRECATED> and no longer maintained.
+Please do not use this module for new projects.
+See L<HTTP::Session2> for details.
 
 =head1 DESCRIPTION
 

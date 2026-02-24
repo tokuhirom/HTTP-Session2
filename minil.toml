@@ -1,2 +1,5 @@
 name = "HTTP-Session2"
 badges = ["travis", "coveralls"]
+
+[Metadata]
+x_deprecated = 1

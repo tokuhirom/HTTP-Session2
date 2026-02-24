@@ -16,6 +16,11 @@ __END__
 
 HTTP::Session2 - HTTP session management
 
+=head1 DEPRECATION NOTICE
+
+This module is B<DEPRECATED> and no longer maintained.
+Please do not use this module for new projects.
+
 =head1 SYNOPSIS
 
     package MyApp;
