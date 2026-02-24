@@ -3,6 +3,11 @@
 
 HTTP::Session2 - HTTP session management
 
+# DEPRECATION NOTICE
+
+This module is **DEPRECATED** and no longer maintained.
+Please do not use this module for new projects.
+
 # SYNOPSIS
 
     package MyApp;

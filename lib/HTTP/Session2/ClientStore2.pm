@@ -200,6 +200,12 @@ __END__
 
 HTTP::Session2::ClientStore2 - Client store
 
+=head1 DEPRECATION NOTICE
+
+This module is B<DEPRECATED> and no longer maintained.
+Please do not use this module for new projects.
+See L<HTTP::Session2> for details.
+
 =head1 DESCRIPTION
 
 This is a part of L<HTTP::Session2> library.
