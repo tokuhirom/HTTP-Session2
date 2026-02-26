@@ -4,7 +4,7 @@ use warnings;
 use utf8;
 use 5.008_001;
 
-our $VERSION = "1.11";
+our $VERSION = "1.12";
 
 use Carp ();
 use Digest::HMAC;
