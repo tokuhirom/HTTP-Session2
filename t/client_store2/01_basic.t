@@ -15,6 +15,7 @@ my $cipher = Crypt::CBC->new(
     {
         key              => 'abcdefghijklmnop',
         cipher           => 'Rijndael',
+        pbkdf            => 'pbkdf2',
     }
 );
 

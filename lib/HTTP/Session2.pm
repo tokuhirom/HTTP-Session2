@@ -30,6 +30,7 @@ Please do not use this module for new projects.
         {
             key    => 'abcdefghijklmnop',
             cipher => 'Rijndael',
+            pbkdf  => 'pbkdf2',
         }
     );
     sub session {
