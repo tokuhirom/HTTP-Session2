@@ -26,13 +26,19 @@ Please do not use this module for new projects.
     package MyApp;
     use HTTP::Session2;
 
+    my $cipher = Crypt::CBC->new(
+        {
+            key    => 'abcdefghijklmnop',
+            cipher => 'Rijndael',
+        }
+    );
     sub session {
         my $self = shift;
         if (!exists $self->{session}) {
-            $self->{session} = HTTP::Session2::ServerStore->new(
+            $self->{session} = HTTP::Session2::ClientStore2->new(
                 env => $env,
-                secret => 'very long secret string',
-                store  => $cache,
+                secret => 'very long secret string'
+                cipher => $cipher,
             );
         }
         $self->{session};
@@ -134,9 +140,69 @@ You need to call XSRF validator.
         }
     );
 
-=head1 Session Store
+=head1 pros/cons for ServerStore/ClientStore2
 
-This module provides L<HTTP::Session2::ServerStore> for server-side session storage.
+=head2 ServerStore
+
+=head3 pros
+
+=over 4
+
+=item It was used well.
+
+=item User can't see anything.
+
+=item You can store large data in session.
+
+=back
+
+=head3 cons
+
+=over 4
+
+=item Setup is hard.
+
+You need to setup some configuration for your application.
+
+=back
+
+=head2 ClientStore2
+
+=head3 pros
+
+=over 4
+
+=item You don't need to store anything on your server
+
+It makes easy to setup your server environment.
+
+=item Less server side disk
+
+It helps your wallet.
+
+=back
+
+=head3 cons
+
+=over 4
+
+=item Security
+
+I hope this module is secure. Because the data was signed by HMAC. But security thing is hard.
+
+=item Bandwidth
+
+If you store the large data to the session, your session data is send to the server per every request.
+It may hits band-width issue. If you are writing high traffic web site, you should use server side store.
+
+=item Capacity
+
+Cookies are usually limited to 4096 bytes. You can't store large data to the session.
+You should care the cookie size, or checking cookie size by the Plack::Middleware layer.
+
+Ref. L<RFC2965|http://tools.ietf.org/html/rfc2965>
+
+=back
 
 =head1 FAQ
 
