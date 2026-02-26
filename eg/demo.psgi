@@ -1,7 +1,10 @@
 use strict;
 use Plack::Builder;
 use Plack::Request;
-use HTTP::Session2::ClientStore;
+use lib 'lib';
+use lib 't/lib';
+use Cache;
+use HTTP::Session2::ServerStore;
 use File::Spec::Functions;
 use File::Basename qw(dirname);
 
@@ -25,7 +28,7 @@ TOP_HTML
 
 sub {
     my $req = Plack::Request->new(shift);
-    my $session = HTTP::Session2::ClientStore->new(env => $req->env, secret => 'hah');
+    my $session = HTTP::Session2::ServerStore->new(env => $req->env, secret => 'very long secret string!', get_store => sub { Cache->new() });
     if ($req->method eq 'POST') {
         my $token = $req->header('X-XSRF-TOKEN') || $req->param('XSRF-TOKEN');
         unless ($session->validate_xsrf_token($token)) {

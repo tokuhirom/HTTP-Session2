@@ -6,7 +6,6 @@ use Test::WWW::Mechanize::PSGI;
 use lib 't/lib/';
 use Cache;
 use HTTP::Session2::ServerStore;
-use HTTP::Session2::ClientStore;
 
 sub SUCCESS() { [200, [], ['OK']] }
 
@@ -66,7 +65,7 @@ my $app = sub {
     return $res;
 };
 
-for my $session_factory (\&server_session, \&client_session) {
+for my $session_factory (\&server_session) {
     note "------ factory";
 
     local $SESSION_FACTORY = $session_factory;
@@ -122,10 +121,3 @@ sub server_session {
     );
 }
 
-sub client_session {
-    my $env = shift;
-    HTTP::Session2::ClientStore->new(
-        env => $env,
-        secret => 's3cret',
-    );
-}
