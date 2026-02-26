@@ -1,26 +1,20 @@
 use strict;
 use warnings;
-use Crypt::CBC;
-use HTTP::Session2::ClientStore2;
+use lib 't/lib';
+use Cache;
+use HTTP::Session2::ServerStore;
 use Test::More;
-
-my $cipher = Crypt::CBC->new(
-    {
-        key              => 'abcdefghijklmnop',
-        cipher           => 'Rijndael',
-    }
-);
 
 {
     my $warn = '';
     local $SIG{__WARN__} = sub {
         $warn .= "@_";
     };
-    my $session = HTTP::Session2::ClientStore2->new(
+    my $session = HTTP::Session2::ServerStore->new(
         env => {
         },
         secret => 's3cret',
-        cipher => $cipher,
+        get_store => sub { Cache->new() },
     );
     like $warn, qr/Secret string too short/;
 }
@@ -29,11 +23,11 @@ my $cipher = Crypt::CBC->new(
     local $SIG{__WARN__} = sub {
         $warn .= "@_";
     };
-    my $session = HTTP::Session2::ClientStore2->new(
+    my $session = HTTP::Session2::ServerStore->new(
         env => {
         },
-        secret => 's3cretooooooooooooooooooo',
-        cipher => $cipher,
+        secret => 's3cretooooooooooooooooo',
+        get_store => sub { Cache->new() },
     );
     unlike $warn, qr/Secret string too short/;
 }

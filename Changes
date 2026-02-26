@@ -2,6 +2,12 @@ Revision history for Perl extension HTTP-Session2
 
 {{$NEXT}}
 
+    - Removed HTTP::Session2::ClientStore and HTTP::Session2::ClientStore2
+
+1.11 2026-02-24T22:44:48Z
+
+    - Deprecate the module
+
 1.10 2018-01-26T05:01:07Z
 
     - Validate session ID

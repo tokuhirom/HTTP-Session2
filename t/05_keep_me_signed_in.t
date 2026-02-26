@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use HTTP::Session2::ClientStore;
+use lib 't/lib';
+use Cache;
+use HTTP::Session2::ServerStore;
 
 my $conf = {
     session_cookie => {
@@ -12,11 +14,12 @@ my $conf = {
         path     => '/',
     },
 };
-my $session = HTTP::Session2::ClientStore->new(
+my $session = HTTP::Session2::ServerStore->new(
     env => {
     },
-    secret => 's3cret',
+    secret => 's3cretooooooooooooooooo',
     session_cookie => $conf->{session_cookie},
+    get_store => sub { Cache->new() },
 );
 $session->session_cookie->{expires} = '+1M';
 $session->set(x => 3);
@@ -27,4 +30,3 @@ like $res->[1]->[1], qr{\Ahss_session=.*; expires=.*;};
 is $conf->{session_cookie}->{expires}, undef, 'Original configuration is not modified';
 
 done_testing;
-

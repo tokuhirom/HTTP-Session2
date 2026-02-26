@@ -4,14 +4,16 @@ use utf8;
 use Test::More;
 use Plack::Response;
 
-use HTTP::Session2::ClientStore;
+use lib 't/lib';
+use Cache;
+use HTTP::Session2::ServerStore;
 use Test::WWW::Mechanize::PSGI;
 
 {
     my $app = sub {
         my $env = shift;
 
-        my $session = HTTP::Session2::ClientStore->new(env => $env, secret => 'yes. i am secret man.');
+        my $session = HTTP::Session2::ServerStore->new(env => $env, secret => 'yes. i am secret man.', get_store => sub { Cache->new() });
         $session->set(foo => 'bar');
 
         my $res = Plack::Response->new(200);
@@ -29,7 +31,7 @@ use Test::WWW::Mechanize::PSGI;
     my $app = sub {
         my $env = shift;
 
-        my $session = HTTP::Session2::ClientStore->new(env => $env, secret => 'yes. i am secret man.');
+        my $session = HTTP::Session2::ServerStore->new(env => $env, secret => 'yes. i am secret man.', get_store => sub { Cache->new() });
         $session->expire;
 
         my $res = Plack::Response->new(200);
